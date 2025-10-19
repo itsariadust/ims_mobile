@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/views/routes/app_router.dart';
+import 'package:ims_mobile/routes/app_router.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

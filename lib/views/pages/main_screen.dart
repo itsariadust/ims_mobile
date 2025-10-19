@@ -5,7 +5,7 @@ import 'package:ims_mobile/views/pages/inventory.dart';
 import 'package:ims_mobile/views/pages/suppliers.dart';
 import 'package:ims_mobile/views/pages/transactions.dart';
 
-import '../viewmodels/auth_viewmodel.dart';
+import '../../viewmodels/auth/auth_viewmodel.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -56,17 +56,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   child: Text('Title')
               ),
               ListTile(
-                onTap: () async {
-                  await ref.read(authViewModelProvider.notifier).logout();
-
-                  if (context.mounted) Navigator.pop(context);
-
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('You have been logged out.')),
-                    );
-                  }
-                },
+                onTap: () => ref.read(authViewModelProvider.notifier).logout(),
                 title: Text('Logout'),
               )
             ],

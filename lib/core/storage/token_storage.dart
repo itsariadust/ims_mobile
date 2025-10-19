@@ -1,29 +1,45 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ims_mobile/core/storage/token_pair.dart';
 
-final storage = FlutterSecureStorage();
+final tokenStorageProvider = Provider<TokenStorage>((ref) {
+  return TokenStorage();
+});
 
-class SecureTokenStorage {
-  // Save tokens
-  Future<void> saveTokens(TokenPair tokens) async {
-    await storage.write(key: 'access_token', value: tokens.accessToken);
-    await storage.write(key: 'refresh_token', value: tokens.refreshToken);
+class TokenStorage {
+  final _storage = const FlutterSecureStorage();
+
+  // Keys
+  static const String _accessTokenKey = 'access_token';
+  static const String _refreshTokenKey = 'refresh_token';
+
+  // --- Access Token Methods ---
+  Future<void> saveAccessToken(String token) async {
+    await _storage.write(key: _accessTokenKey, value: token);
   }
 
-  // return TokenPair
-  Future<TokenPair?> loadTokens() async {
-    final access = await storage.read(key: 'access_token');
-    final refresh = await storage.read(key: 'refresh_token');
-    if (access != null && refresh != null) {
-      return TokenPair(accessToken: access, refreshToken: refresh);
-    }
-    return null;
+  Future<String?> getAccessToken() async {
+    return await _storage.read(key: _accessTokenKey);
   }
 
-  // Get either the access or refresh token
-  Future<String?> getAccessToken() => storage.read(key: 'access_token');
-  Future<String?> getRefreshToken() => storage.read(key: 'refresh_token');
+  Future<void> deleteAccessToken() async {
+    await _storage.delete(key: _accessTokenKey);
+  }
 
-  // Logout and clear tokens
-  Future<void> clear() async => await storage.deleteAll();
+  // --- Refresh Token Methods ---
+  Future<void> saveRefreshToken(String token) async {
+    await _storage.write(key: _refreshTokenKey, value: token);
+  }
+
+  Future<String?> getRefreshToken() async {
+    return await _storage.read(key: _refreshTokenKey);
+  }
+
+  Future<void> deleteRefreshToken() async {
+    await _storage.delete(key: _refreshTokenKey);
+  }
+
+  // --- Clear All ---
+  Future<void> clearAll() async {
+    await _storage.deleteAll();
+  }
 }

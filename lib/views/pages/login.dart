@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/views/viewmodels/auth_viewmodel.dart';
+import 'package:ims_mobile/viewmodels/auth/auth_viewmodel.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+final emailControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
+  final controller = TextEditingController();
+  ref.onDispose(() => controller.dispose());
+  return controller;
+});
+
+final passwordControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
+  final controller = TextEditingController();
+  ref.onDispose(() => controller.dispose());
+  return controller;
+});
+
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authViewModelProvider);
+    final viewModel = ref.read(authViewModelProvider.notifier);
 
-class _LoginPageState extends ConsumerState<LoginPage>{
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+    final emailController = ref.watch(emailControllerProvider);
+    final passwordController = ref.watch(passwordControllerProvider);
 
-  String? usernameError;
-  String? passwordError;
-
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
@@ -41,12 +41,13 @@ class _LoginPageState extends ConsumerState<LoginPage>{
               ),
               SizedBox(height: 32),
               TextField(
-                controller: usernameController,
+                controller: emailController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
-                  errorText: usernameError,
+                  labelText: 'Email',
+                  errorText: authState.emailError,
                   border: const OutlineInputBorder(),
                 ),
+                  onChanged: viewModel.updateEmail
               ),
               SizedBox(height: 16),
               TextField(
@@ -54,55 +55,28 @@ class _LoginPageState extends ConsumerState<LoginPage>{
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  errorText: passwordError,
+                  errorText: authState.passwordError,
                   border: const OutlineInputBorder(),
                 ),
+                  onChanged: viewModel.updatePassword
               ),
               SizedBox(height: 16),
               TextButton(
-                onPressed: () => handleLogin(),
+                onPressed: authState.isLoading ? null : viewModel.login,
                 style: TextButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary
                 ),
-                child: Text(
-                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                  'Login'
-                )
+                child: authState.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text('Login', style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary
+                  )
+                ),
               )
             ],
           ),
         )
       )
     );
-  }
-
-  void handleLogin() async {
-    setState(() {
-      usernameError = usernameController.text.isEmpty ? 'Username cannot be empty' : null;
-      passwordError = passwordController.text.isEmpty ? 'Password cannot be empty' : null;
-    });
-
-    if (usernameError != null || passwordError != null) return;
-
-    try {
-      // Use local state (dialog) for loading
-      if (mounted) {
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (_) => const Center(child: CircularProgressIndicator()),
-        );
-      }
-
-      // authViewModelProvider's state is NOT set to AsyncLoading() here anymore.
-      await ref.read(authViewModelProvider.notifier).login(usernameController.text, passwordController.text);
-    } catch (e) {
-      setState(() {
-        usernameError = 'Invalid username or password';
-        passwordError = 'Invalid username or password';
-      });
-    } finally {
-      if (mounted) Navigator.of(context).pop(); // close loading dialog
-    }
   }
 }
