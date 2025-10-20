@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ims_mobile/models/auth/auth_tokens_model.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:ims_mobile/core/storage/token_storage.dart';
@@ -25,9 +26,11 @@ class AuthRepository {
     required String password
   }) async {
     try {
-      final authTokens = await _authService.login(
+      final loginResponse = await _authService.login(
         username: username, password: password
       );
+
+      final authTokens = AuthTokens.fromJson(loginResponse);
 
       await _tokenStorage.saveAccessToken(authTokens.accessToken);
       await _tokenStorage.saveRefreshToken(authTokens.refreshToken);
@@ -88,6 +91,22 @@ class AuthRepository {
     } catch (e) {
       await _tokenStorage.clearAll();
       return false;
+    }
+  }
+
+  Future<String?> getUserIdFromToken() async {
+    final accessToken = await _tokenStorage.getAccessToken();
+
+    if (accessToken == null) {
+      return null;
+    }
+
+    try {
+      final decodedToken = JwtDecoder.decode(accessToken);
+      return decodedToken['sub'] as String?;
+    } catch (e) {
+      print('Error decoding JWT to get user ID: $e');
+      return null;
     }
   }
 }

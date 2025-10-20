@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/core/constants/api_constants.dart';
 import 'package:ims_mobile/core/network/api_client.dart';
-import 'package:ims_mobile/models/auth_tokens_model.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
@@ -17,7 +16,7 @@ class AuthService {
   static const String _tokenEndpoint = ApiConstants.keycloakUrl;
 
   // Login
-  Future<AuthTokens> login({
+  Future<Map<String, dynamic>> login({
     required String username,
     required String password
   }) async {
@@ -34,7 +33,8 @@ class AuthService {
           contentType: Headers.formUrlEncodedContentType
         ),
       );
-      return AuthTokens.fromJson(response.data);
+
+      return response.data;
     } on DioException catch (e) {
       throw Exception(e.toString());
     }
