@@ -3,6 +3,7 @@ import 'package:ims_mobile/repositories/auth_repository.dart';
 import 'package:ims_mobile/core/errors/failures.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:ims_mobile/viewmodels/auth/auth_check_notifier.dart';
+import 'package:ims_mobile/viewmodels/user/user_viewmodel.dart';
 
 // Auth state
 class AuthState {
@@ -89,6 +90,7 @@ class AuthViewModel extends Notifier<AuthState> {
         if (isSuccess) {
           final authNotifier = ref.read(authCheckNotifierProvider.notifier);
           authNotifier.setAuthenticated();
+          ref.read(userViewModelProvider.notifier).refreshProfile();
         }
         break;
       case FailureResult(failure: final failure):
@@ -143,6 +145,7 @@ class AuthViewModel extends Notifier<AuthState> {
 
   Future<void> logout() async {
     await _authRepository.logout();
+    ref.read(userViewModelProvider.notifier).clearProfile();
     final authNotifier = ref.read(authCheckNotifierProvider.notifier);
     authNotifier.setUnauthenticated();
   }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ims_mobile/views/components/navigation_drawer.dart';
 import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/inventory.dart';
 import 'package:ims_mobile/views/pages/suppliers.dart';
 import 'package:ims_mobile/views/pages/transactions.dart';
-
-import '../../viewmodels/auth/auth_viewmodel.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -46,22 +45,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           )
         ],
       ),
-      drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary
-                  ),
-                  child: Text('Title')
-              ),
-              ListTile(
-                onTap: () => ref.read(authViewModelProvider.notifier).logout(),
-                title: Text('Logout'),
-              )
-            ],
-          )
-      ),
+      drawer: AppDrawer(),
       body: _navItems[_selectedIndex].widget,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
