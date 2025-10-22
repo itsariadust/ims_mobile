@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/models/auth/auth_tokens_model.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:ims_mobile/core/storage/token_storage.dart';
@@ -30,10 +29,8 @@ class AuthRepository {
         username: username, password: password
       );
 
-      final authTokens = AuthTokens.fromJson(loginResponse);
-
-      await _tokenStorage.saveAccessToken(authTokens.accessToken);
-      await _tokenStorage.saveRefreshToken(authTokens.refreshToken);
+      await _tokenStorage.saveAccessToken(loginResponse.accessToken);
+      await _tokenStorage.saveRefreshToken(loginResponse.refreshToken);
 
       return Success(true);
     } on DioException catch (e) {
