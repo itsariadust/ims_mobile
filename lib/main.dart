@@ -15,7 +15,14 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: router,
       title: 'IMS App',
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: ThemeData(
+        colorSchemeSeed: Colors.green,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorSchemeSeed: Colors.green,
+      ),
+      themeMode: ThemeMode.dark,
     );
   }
 }
