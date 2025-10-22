@@ -33,8 +33,10 @@ class AppDrawer extends ConsumerWidget {
               );
             },
           ),
+          Divider(),
           ListTile(
             onTap: () => authViewModel.logout(),
+            leading: Icon(Icons.logout),
             title: Text('Logout'),
           )
         ],
