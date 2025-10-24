@@ -1,5 +1,3 @@
-// lib/core/errors/failures.dart
-
 /// The ABSTRACT base class for all application errors (Failures).
 ///
 /// It ensures all failures carry a descriptive message.

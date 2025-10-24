@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/core/constants/auth_status.dart';
@@ -11,46 +11,18 @@ import 'package:ims_mobile/routes/transitions.dart';
 import '../views/pages/splash.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authCheckNotifierProvider);
-
   final authNotifier = ref.watch(authCheckNotifierProvider.notifier);
   final routerListenable = authNotifier.routerListenable;
 
-  String? redirectLogic(BuildContext context, GoRouterState state) {
-    final loggingIn = state.matchedLocation == AppRoutes.login;
-    final loading = authState.isLoading;
-
-    if (loading && state.matchedLocation != AppRoutes.splash) {
-      return AppRoutes.splash;
-    }
-
-    if (authState.hasValue && authState.value == AuthStatus.authenticated) {
-      if (loggingIn || state.matchedLocation == AppRoutes.splash) {
-        return AppRoutes.home;
-      }
-
-      return null;
-    }
-
-    if (authState.hasValue && authState.value == AuthStatus.unauthenticated) {
-      if (state.matchedLocation == AppRoutes.home || state.matchedLocation == AppRoutes.splash) {
-        return AppRoutes.login;
-      }
-    }
-
-    return null;
-  }
-
   return GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: '/splash',
     refreshListenable: routerListenable,
-    redirect: redirectLogic,
     routes: [
       GoRoute(
-        path: AppRoutes.splash, builder: (context, state) => SplashScreen(),
+        path: '/splash', builder: (context, state) => SplashScreen(),
       ),
       GoRoute(
-        path: AppRoutes.login,
+        path: '/login',
         pageBuilder: (context, state) => buildPageWithTransition(
           context: context,
           state: state,
@@ -58,13 +30,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: AppRoutes.home,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
+        path: '/home',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
           child: MainScreen(),
-        ),
-      ),
+
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0); // Start from the right (x=1.0)
+            const end = Offset.zero;      // Slide to the center (x=0.0)
+            const curve = Curves.ease;    // Use an easing curve
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        )
+      )
     ]
   );
 });

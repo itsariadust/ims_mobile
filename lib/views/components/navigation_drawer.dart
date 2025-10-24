@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/routes/routes.dart';
 import 'package:ims_mobile/viewmodels/auth/auth_viewmodel.dart';
 import 'package:ims_mobile/viewmodels/user/user_viewmodel.dart';
 
@@ -35,7 +37,10 @@ class AppDrawer extends ConsumerWidget {
           ),
           Divider(),
           ListTile(
-            onTap: () => authViewModel.logout(),
+            onTap: () {
+              authViewModel.logout();
+              context.go(AppRoutes.login);
+            },
             leading: Icon(Icons.logout),
             title: Text('Logout'),
           )

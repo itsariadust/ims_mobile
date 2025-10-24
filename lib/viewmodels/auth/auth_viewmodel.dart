@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/repositories/auth_repository.dart';
 import 'package:ims_mobile/core/errors/failures.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
+import 'package:ims_mobile/routes/routes.dart';
 import 'package:ims_mobile/viewmodels/auth/auth_check_notifier.dart';
 import 'package:ims_mobile/viewmodels/user/user_viewmodel.dart';
+import 'package:ims_mobile/routes/app_router.dart';
 
 // Auth state
 class AuthState {
@@ -90,6 +92,8 @@ class AuthViewModel extends Notifier<AuthState> {
         if (isSuccess) {
           final authNotifier = ref.read(authCheckNotifierProvider.notifier);
           authNotifier.setAuthenticated();
+          final router = ref.read(appRouterProvider);
+          router.go(AppRoutes.home);
           ref.read(userViewModelProvider.notifier).refreshProfile();
         }
         break;
