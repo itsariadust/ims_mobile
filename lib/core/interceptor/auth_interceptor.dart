@@ -71,7 +71,7 @@ class AuthInterceptor extends Interceptor {
 
   Future<Map<String, String>> _getNewTokens(String refreshToken) async {
     final response = await dio.post(
-      ApiConstants.keycloakUrl,
+      '${ApiConstants().keycloakUrl}/token',
       data: {
         'grant_type': 'refresh_token',
         'refresh_token': refreshToken,

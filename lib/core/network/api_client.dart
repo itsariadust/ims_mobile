@@ -16,7 +16,7 @@ class ApiClient {
 
   ApiClient(this.storage)
     : _dio = Dio(BaseOptions(
-      baseUrl: ApiConstants.baseUrl,
+      baseUrl: ApiConstants().baseUrl,
       connectTimeout: Duration(seconds: 30),
       receiveTimeout: Duration(seconds: 30)
     )) {

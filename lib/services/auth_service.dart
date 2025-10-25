@@ -14,7 +14,8 @@ class AuthService {
   final Dio _dio;
   AuthService(ApiClient apiClient) : _dio = apiClient.dio;
 
-  static const String _tokenEndpoint = ApiConstants.keycloakUrl;
+  final String _tokenEndpoint = '${ApiConstants().keycloakUrl}/token';
+  final String _logoutEndpoint = '${ApiConstants().keycloakUrl}/logout';
 
   // Login
   Future<LoginResponseDto> login({
@@ -47,7 +48,7 @@ class AuthService {
   Future<void> logout(String refreshToken) async {
     try {
       await _dio.post(
-        ApiConstants.logoutEndpoint,
+        _logoutEndpoint,
         data: {
           'client_id': 'ims-frontend-test',
           'refresh_token': refreshToken,
@@ -63,7 +64,7 @@ class AuthService {
 
   Future<Map<String, String>> refreshTokens(String refreshToken) async {
     final response = await _dio.post(
-      ApiConstants.keycloakUrl,
+      _tokenEndpoint,
       data: {
         'client_id': 'ims-frontend-test',
         'refresh_token': refreshToken,

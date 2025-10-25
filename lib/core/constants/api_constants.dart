@@ -1,5 +1,9 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConstants {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/';
-  static const String keycloakUrl = 'http://10.0.2.2:9090/realms/ims-realm/protocol/openid-connect/token';
-  static const String logoutEndpoint= 'http://10.0.2.2:9090/realms/ims-realm/protocol/openid-connect/logout';
+  final _baseUrl = dotenv.env['BASE_URL'];
+  final _keycloakUrl = dotenv.env['KEYCLOAK_URL'];
+
+  get baseUrl => _baseUrl;
+  get keycloakUrl => _keycloakUrl;
 }
