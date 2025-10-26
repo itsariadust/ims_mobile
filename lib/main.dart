@@ -25,13 +25,13 @@ class MyApp extends ConsumerWidget {
       routerConfig: router,
       title: 'IMS App',
       theme: ThemeData(
-        colorSchemeSeed: Colors.green,
+        colorSchemeSeed: Colors.blue,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        colorSchemeSeed: Colors.green,
+        colorSchemeSeed: Colors.blue,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
     );
   }
 }

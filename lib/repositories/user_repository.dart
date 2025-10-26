@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/models/employee/employee_model.dart';
+import 'package:ims_mobile/domain/entities/employee/employee.dart';
+import 'package:ims_mobile/models/employee/employee_api_model.dart';
 import 'package:ims_mobile/services/user_service.dart';
 
 import '../core/errors/failures.dart';
@@ -21,7 +22,7 @@ class UserRespository {
     try {
       final profileResponse = await _userService.fetchUserProfile();
 
-      final profile = Employee.fromJson(profileResponse);
+      final profile = Employee.toEmployee(profileResponse);
 
       return Success(profile);
     } on DioException catch (e) {
