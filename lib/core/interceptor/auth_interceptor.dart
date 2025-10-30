@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ims_mobile/core/constants/api_constants.dart';
 import 'package:ims_mobile/core/storage/token_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
@@ -11,7 +12,8 @@ class AuthInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    final accessToken = await storage.getAccessToken();
+    final session = Supabase.instance.client.auth.currentSession;
+    final accessToken = session?.accessToken;
 
     if (accessToken != null) {
       options.headers['Authorization'] = 'Bearer $accessToken';
@@ -47,44 +49,6 @@ class AuthInterceptor extends Interceptor {
       debugPrint('Status Code: ${err.response?.statusCode}');
     }
 
-    if (err.response?.statusCode == 401) {
-      try {
-        final refreshToken = await storage.getRefreshToken();
-        if (refreshToken != null) {
-          final newTokens = await _getNewTokens(refreshToken);
-
-          await storage.saveAccessToken(newTokens['accessToken']!);
-          await storage.saveRefreshToken(newTokens['refreshToken']!);
-
-          final opts =  err.requestOptions;
-          opts.headers['Authorization'] = 'Bearer $refreshToken';
-
-          final response = await dio.fetch(opts);
-          return handler.resolve(response);
-        }
-      } catch (e) {
-        await storage.clearAll();
-      }
-    }
     super.onError(err, handler);
-  }
-
-  Future<Map<String, String>> _getNewTokens(String refreshToken) async {
-    final response = await dio.post(
-      '${ApiConstants().keycloakUrl}/token',
-      data: {
-        'grant_type': 'refresh_token',
-        'refresh_token': refreshToken,
-        'client-id': 'ims-frontend-test'
-      },
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType
-      ),
-    );
-
-    return {
-      'accessToken': response.data['access_token'] as String,
-      'refreshToken': response.data['refresh_token'] as String,
-    };
   }
 }
