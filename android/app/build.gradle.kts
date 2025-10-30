@@ -6,11 +6,7 @@ plugins {
 }
 
 android {
-<<<<<<< HEAD
-    namespace = "com.ariadust.ims_mobile"
-=======
     namespace = "com.ariadust.imsmobile"
->>>>>>> develop
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -25,11 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-<<<<<<< HEAD
-        applicationId = "com.ariadust.ims_mobile"
-=======
         applicationId = "com.ariadust.imsmobile"
->>>>>>> develop
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 29
