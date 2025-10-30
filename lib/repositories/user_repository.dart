@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
-import 'package:ims_mobile/models/employee/employee_api_model.dart';
 import 'package:ims_mobile/services/user_service.dart';
 
 import '../core/errors/failures.dart';

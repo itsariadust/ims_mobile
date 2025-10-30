@@ -40,6 +40,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               child: child,
             );
           },
+          transitionDuration: Duration(milliseconds: 1000)
         )
       )
     ]

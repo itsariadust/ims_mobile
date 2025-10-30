@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ims_mobile/core/constants/api_constants.dart';
 import 'package:ims_mobile/core/storage/token_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
