@@ -42,6 +42,7 @@ dependencies:
   json_annotation: ^4.9.0
   result_dart: ^2.1.1
   flutter_dotenv: ^6.0.0
+  supabase_flutter: ^2.10.3
 
 dev_dependencies:
   flutter_test:

@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:ims_mobile/viewmodels/auth/auth_viewmodel.dart';
 
-final emailControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
-
-final passwordControllerProvider = Provider.autoDispose<TextEditingController>((ref) {
-  final controller = TextEditingController();
-  ref.onDispose(() => controller.dispose());
-  return controller;
-});
-
-class LoginPage extends ConsumerWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authViewModelProvider);
-    final viewModel = ref.read(authViewModelProvider.notifier);
+  ConsumerState<LoginPage> createState() => _LoginPageState();
+}
 
-    final emailController = ref.watch(emailControllerProvider);
-    final passwordController = ref.watch(passwordControllerProvider);
+class _LoginPageState extends ConsumerState<LoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  String? errorText;
+
+  Future<void> _onLogin() async {
+    setState(() {
+      errorText = null;
+    });
+
+    final result = await ref.read(authViewModelProvider.notifier).login(
+      emailController.text,
+      passwordController.text,
+    );
+
+    if (result is Success) {
+      if (mounted) context.go('/home');
+    } else if (result is FailureResult) {
+      final failure = result.toString();
+      setState(() {
+        errorText = failure;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = ref.watch(authViewModelProvider).isLoading;
 
     return Scaffold(
       body: Center(
@@ -34,20 +49,19 @@ class LoginPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Center(child:
-                Text(
+              Text(
                   style: Theme.of(context).textTheme.headlineLarge,
                   'Login to the System'
-                ),
+              ),
               ),
               SizedBox(height: 32),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  errorText: authState.emailError,
+                  errorText: errorText != null ? '' : null,
                   border: const OutlineInputBorder(),
                 ),
-                  onChanged: viewModel.updateEmail
               ),
               SizedBox(height: 16),
               TextField(
@@ -55,24 +69,17 @@ class LoginPage extends ConsumerWidget {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  errorText: authState.passwordError,
+                  errorText: errorText != null ? '' : null,
                   border: const OutlineInputBorder(),
                 ),
-                  onChanged: viewModel.updatePassword
               ),
               SizedBox(height: 16),
-              TextButton(
-                onPressed: authState.isLoading ? null : viewModel.login,
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary
-                ),
-                child: authState.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : Text('Login', style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary
-                  )
-                ),
-              )
+              FilledButton(
+                onPressed: isLoading ? null : _onLogin,
+                child: isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Login'),
+              ),
             ],
           ),
         )

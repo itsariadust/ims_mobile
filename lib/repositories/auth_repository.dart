@@ -1,109 +1,39 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
-
-import 'package:ims_mobile/core/storage/token_storage.dart';
-import 'package:ims_mobile/services/auth_service.dart';
-import 'package:ims_mobile/core/typedefs/result.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ims_mobile/core/errors/failures.dart';
-
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final authService = ref.watch(authServiceProvider);
-  final storageService = ref.watch(tokenStorageProvider);
-
-  return AuthRepository(authService, storageService);
-});
+import 'package:ims_mobile/core/typedefs/result.dart';
 
 class AuthRepository {
-  final AuthService _authService;
-  final TokenStorage _tokenStorage;
+  final SupabaseClient _client = Supabase.instance.client;
 
-  AuthRepository(this._authService, this._tokenStorage);
-
-  Future<Result<bool>> login({
-    required String username,
-    required String password
-  }) async {
+  Future<Result<Session?>> getSession() async {
     try {
-      final loginResponse = await _authService.login(
-        username: username, password: password
+      final session = _client.auth.currentSession;
+      return Success(session);
+    } catch (e) {
+      return FailureResult(ServerFailure(message: 'Failed to fetch session: $e'));
+    }
+  }
+
+  Future<Result<User>> login(String email, String password) async {
+    try {
+      final res = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
       );
 
-      await _tokenStorage.saveAccessToken(loginResponse.accessToken);
-      await _tokenStorage.saveRefreshToken(loginResponse.refreshToken);
-
-      return Success(true);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        return FailureResult(AuthFailure(message: 'Invalid username or password.'));
+      if (res.user != null) {
+        return Success(res.user!);
+      } else {
+        return FailureResult(AuthFailure(message: 'Invalid credentials'));
       }
-      return FailureResult(ServerFailure(message: e.message ?? 'An unknown server error occurred.'));
+    } on AuthException catch (e) {
+      return FailureResult(AuthFailure(message: e.message));
     } catch (e) {
-      return FailureResult(AuthFailure(message: 'An unexpected error occurred during login.'));
+      return FailureResult(ServerFailure(message: 'Unexpected error: $e'));
     }
   }
 
   Future<void> logout() async {
-    final refreshToken = await _tokenStorage.getRefreshToken();
-
-    if (refreshToken != null) {
-      await _authService.logout(refreshToken);
-    }
-
-    await _tokenStorage.clearAll();
-  }
-
-  Future<bool?> checkToken() async {
-    final accessToken = await _tokenStorage.getAccessToken();
-    final refreshToken = await _tokenStorage.getRefreshToken();
-
-    if (accessToken == null || refreshToken == null) {
-      return false;
-    }
-
-    if (!JwtDecoder.isExpired(accessToken)) {
-      return true;
-    }
-
-    if (!JwtDecoder.isExpired(refreshToken)) {
-      return null;
-    }
-
-    return false;
-  }
-
-  Future<bool> silentRefresh() async {
-    final refreshToken = await _tokenStorage.getRefreshToken();
-    if (refreshToken == null) {
-      return false;
-    }
-
-    try {
-      final Map<String, String> newTokens = await _authService.refreshTokens(refreshToken);
-
-      await _tokenStorage.saveAccessToken(newTokens['accessToken']!);
-      await _tokenStorage.saveRefreshToken(newTokens['refreshToken']!);
-
-      return true;
-    } catch (e) {
-      await _tokenStorage.clearAll();
-      return false;
-    }
-  }
-
-  Future<String?> getUserIdFromToken() async {
-    final accessToken = await _tokenStorage.getAccessToken();
-
-    if (accessToken == null) {
-      return null;
-    }
-
-    try {
-      final decodedToken = JwtDecoder.decode(accessToken);
-      return decodedToken['sub'] as String?;
-    } catch (e) {
-      print('Error decoding JWT to get user ID: $e');
-      return null;
-    }
+    await _client.auth.signOut();
   }
 }

@@ -1,4 +1,4 @@
-package com.ariadust.ims_mobile
+package com.ariadust.imsmobile
 
 import io.flutter.embedding.android.FlutterActivity
 
