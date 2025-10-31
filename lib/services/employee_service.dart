@@ -25,4 +25,14 @@ class EmployeeService {
       throw Exception(e.toString());
     }
   }
+
+  Future<EmployeeApiModel> fetchEmployee(int id) async {
+    try {
+      final response = await _dio.get('$_employeeEndpoint/$id');
+
+      return EmployeeApiModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
