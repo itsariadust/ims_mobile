@@ -54,4 +54,20 @@ void main() {
       verify(mockDio.get(any)).called(1);
     });
   });
+
+  test('fetch employee returns the employee itself', () async {
+    final response = Response(
+      data: mockEmployeeList[0],
+      statusCode: 200,
+      requestOptions: RequestOptions(path: '/employees/1')
+    );
+
+    when(mockDio.get('/employees/1')).thenAnswer((_) async => response);
+
+    final employee = await employeeService.fetchEmployee(1);
+
+    expect(employee, isA<EmployeeApiModel>());
+    expect(employee.id, equals(mockEmployeeList[0]['id']));
+    verify(mockDio.get(any)).called(1);
+  });
 }

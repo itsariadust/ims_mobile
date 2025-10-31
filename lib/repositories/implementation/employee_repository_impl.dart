@@ -24,8 +24,13 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   }
 
   @override
-  Future<Employee> getEmployee() {
-    // TODO: implement getEmployee
-    throw UnimplementedError();
+  Future<Employee> getEmployee(int id) async {
+    try {
+      final employee = await _employeeService.fetchEmployee(id);
+
+      return employee.toEmployee();
+    } catch (e) {
+      rethrow;
+    }
   }
 }
