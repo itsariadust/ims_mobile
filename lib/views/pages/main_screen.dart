@@ -5,7 +5,7 @@ import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/inventory.dart';
 import 'package:ims_mobile/views/pages/suppliers.dart';
 import 'package:ims_mobile/views/pages/transactions.dart';
-import 'package:ims_mobile/views/pages/employees/employees.dart';
+import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});

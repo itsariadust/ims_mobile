@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/routes/app_router.dart';
+import 'package:ims_mobile/core/routes/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {

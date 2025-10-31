@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/main_screen.dart';
 import 'package:ims_mobile/views/pages/login.dart';
-import 'package:ims_mobile/routes/transitions.dart';
+import 'package:ims_mobile/core/routes/transitions.dart';
 
-import '../views/pages/splash.dart';
+import '../../views/pages/splash.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -32,6 +33,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             const begin = Offset(1.0, 0.0); // Start from the right (x=1.0)
             const end = Offset.zero;      // Slide to the center (x=0.0)
             const curve = Curves.ease;    // Use an easing curve
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+          transitionDuration: Duration(milliseconds: 1000)
+        )
+      ),
+      GoRoute(
+        path: '/employee',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: EmployeesScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0); // Start from the right (x=1.0)
+            const end = Offset.zero; // Slide to the center (x=0.0)
+            const curve = Curves.ease; // Use an easing curve
 
             var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
