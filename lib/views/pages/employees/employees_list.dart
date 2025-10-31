@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/routes/app_router.dart';
 import 'package:ims_mobile/viewmodels/employee/employee_list_viewmodel.dart';
+import 'package:ims_mobile/views/pages/employees/employee_detail.dart';
 
 class EmployeesScreen extends ConsumerWidget {
   const EmployeesScreen({super.key});
@@ -9,6 +10,7 @@ class EmployeesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final employeeListAsyncValue = ref.watch(employeeListViewModelProvider);
+    final rootContext = ref.read(appRouterProvider).routerDelegate.navigatorKey.currentContext;
     return Scaffold(
       body: employeeListAsyncValue.when(
         data: (employees) {
@@ -22,9 +24,25 @@ class EmployeesScreen extends ConsumerWidget {
                 final employee = employees[index];
                 return ListTile(
                   onTap: () {
-                    context.pushNamed('employeeDetail', pathParameters: {
-                      'id': employee.id.toString()
-                    });
+                    showModalBottomSheet(
+                      context: rootContext ?? context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      enableDrag: true,
+                      builder: (context) {
+                        return DraggableScrollableSheet(
+                          expand: false,
+                          initialChildSize: 0.6,
+                          minChildSize: 0.4,
+                          maxChildSize: 1,
+                          builder: (context, scrollController) {
+                            return EmployeeDetailScreen(
+                              employeeId: employee.id,
+                            );
+                          }
+                      );
+                      }
+                    );
                   },
                   key: ValueKey(employee!.id),
                   leading: CircleAvatar(

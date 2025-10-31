@@ -99,19 +99,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      GoRoute(
-        name: 'employeeDetail',
-        path: '/employees/:id',
-        parentNavigatorKey: _rootNavigatorKey,
-        pageBuilder: (context, state) {
-          final employeeId = int.parse(state.pathParameters['id']!);
-          return buildPageWithTransition(
-            context: context,
-            state: state,
-            child: EmployeeDetailScreen(employeeId: employeeId)
-          );
-        }
-      )
     ],
   );
 });
