@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/viewmodels/employee/employee_list_viewmodel.dart';
 
 class EmployeesScreen extends ConsumerWidget {
@@ -20,9 +21,14 @@ class EmployeesScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final employee = employees[index];
                 return ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    context.pushNamed('employeeDetail', pathParameters: {
+                      'id': employee.id.toString()
+                    });
+                  },
+                  key: ValueKey(employee!.id),
                   leading: CircleAvatar(
-                    child: Text(employee!.fullName[0]),
+                    child: Text(employee.fullName[0]),
                   ),
                   title: Text(employee.fullName),
                   subtitle: Text(employee.email),

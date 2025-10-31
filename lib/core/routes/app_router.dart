@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/views/pages/employees/employee_detail.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/inventory.dart';
@@ -98,6 +99,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
+      GoRoute(
+        name: 'employeeDetail',
+        path: '/employees/:id',
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) {
+          final employeeId = int.parse(state.pathParameters['id']!);
+          return buildPageWithTransition(
+            context: context,
+            state: state,
+            child: EmployeeDetailScreen(employeeId: employeeId)
+          );
+        }
+      )
     ],
   );
 });
