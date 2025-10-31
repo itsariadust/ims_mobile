@@ -5,6 +5,7 @@ import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/inventory.dart';
 import 'package:ims_mobile/views/pages/suppliers.dart';
 import 'package:ims_mobile/views/pages/transactions.dart';
+import 'package:ims_mobile/views/pages/employees.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -21,6 +22,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     _NavItem('Inventory', Icons.inventory_2_outlined, Icons.inventory, InventoryScreen()),
     _NavItem('Suppliers', Icons.store_outlined, Icons.store, SuppliersScreen()),
     _NavItem('Transactions', Icons.receipt_outlined, Icons.receipt, TransactionsScreen()),
+    _NavItem('Employees', Icons.person_2_outlined, Icons.person_2, EmployeesScreen()),
   ];
 
   void _onItemTapped(int index) {
@@ -47,6 +49,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
       drawer: AppDrawer(),
       body: _navItems[_selectedIndex].widget,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
