@@ -1,3 +1,4 @@
+import 'package:ims_mobile/domain/entities/employee/employee.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'employee_api_model.g.dart';
@@ -22,4 +23,14 @@ class EmployeeApiModel {
   factory EmployeeApiModel.fromJson(Map<String, dynamic> json) => _$EmployeeApiModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$EmployeeApiModelToJson(this);
+
+  Employee toEmployee() {
+    return Employee(
+      id: id,
+      fullName: '$firstName $lastName',
+      email: email,
+      contactNumber: contactNumber,
+      role: role
+    );
+  }
 }
