@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
-import 'package:ims_mobile/views/pages/main_screen.dart';
+import 'package:ims_mobile/views/pages/home.dart';
+import 'package:ims_mobile/views/pages/inventory.dart';
 import 'package:ims_mobile/views/pages/login.dart';
+import 'package:ims_mobile/views/pages/main_screen.dart';
+import 'package:ims_mobile/views/pages/splash.dart';
+import 'package:ims_mobile/views/pages/suppliers.dart';
+import 'package:ims_mobile/views/pages/transactions.dart';
 import 'package:ims_mobile/core/routes/transitions.dart';
 
-import '../../views/pages/splash.dart';
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
     routes: [
       GoRoute(
@@ -17,53 +23,81 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/login',
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: LoginPage(),
-        ),
+        builder: (context, state) => const LoginPage(),
       ),
-      GoRoute(
-        path: '/home',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: MainScreen(),
-
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0); // Start from the right (x=1.0)
-            const end = Offset.zero;      // Slide to the center (x=0.0)
-            const curve = Curves.ease;    // Use an easing curve
-
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-          transitionDuration: Duration(milliseconds: 1000)
-        )
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          // The UI shell (`MainScreen`) is built here
+          return MainScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Branch for the Home tab
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                pageBuilder: (context, state) => buildFadeThroughTransition(
+                  context: context,
+                  state: state,
+                  child: const HomeScreen(),
+                )
+              ),
+            ],
+          ),
+          // Branch for the Inventory tab
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/inventory',
+                pageBuilder: (context, state) => buildFadeThroughTransition(
+                  context: context,
+                  state: state,
+                  child: const InventoryScreen(),
+                )
+              ),
+            ],
+          ),
+          // Branch for the Suppliers tab
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/suppliers',
+                pageBuilder: (context, state) => buildFadeThroughTransition(
+                  context: context,
+                  state: state,
+                  child: const SuppliersScreen(),
+                )
+              ),
+            ],
+          ),
+          // Branch for the Transactions tab
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/transactions',
+                pageBuilder: (context, state) => buildFadeThroughTransition(
+                  context: context,
+                  state: state,
+                  child: const TransactionsScreen(),
+                )
+              ),
+            ],
+          ),
+          // Branch for the Employees tab
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/employees',
+                pageBuilder: (context, state) => buildFadeThroughTransition(
+                  context: context,
+                  state: state,
+                  child: const EmployeesScreen(),
+                )
+              ),
+            ],
+          ),
+        ],
       ),
-      GoRoute(
-        path: '/employee',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: EmployeesScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(1.0, 0.0); // Start from the right (x=1.0)
-            const end = Offset.zero; // Slide to the center (x=0.0)
-            const curve = Curves.ease; // Use an easing curve
-
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: child,
-            );
-          },
-          transitionDuration: Duration(milliseconds: 1000)
-        )
-      )
-    ]
+    ],
   );
 });
