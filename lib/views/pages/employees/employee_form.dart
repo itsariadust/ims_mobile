@@ -81,15 +81,40 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            GoRouter.of(context).pop();
+            if (_isFormModified) {
+              showDialog(context: context, builder: (context) {
+                return AlertDialog(
+                  title: const Text('Discard changes?'),
+                  content: const Text('Are you sure you want to discard your changes?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        GoRouter.of(context).pop();
+                      },
+                      child: Text('No')
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        GoRouter.of(context)..pop()..pop();
+                      },
+                      child: Text('Yes')
+                    )
+                  ],
+                );
+              });
+            } else {
+              GoRouter.of(context).pop();
+            }
           },
           icon: Icon(Icons.arrow_back)
         ),
         title: _setTitle(),
         actions: [
           TextButton(
-            onPressed: isSaveButtonEnabled ? () {} : null,
-            child: Text('SAVE')
+            onPressed: _isFormModified ? () {
+              // TODO: implement saving methods
+            } : null,
+            child: const Text('SAVE')
           )
         ],
       ),
