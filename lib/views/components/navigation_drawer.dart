@@ -27,8 +27,18 @@ class AppDrawer extends ConsumerWidget {
             ),
             data: (employee) {
               return UserAccountsDrawerHeader(
-                accountName: Text('${employee?.fullName}'),
-                accountEmail: Text(employee!.email),
+                accountName: Text(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary
+                  ),
+                  employee!.fullName
+                ),
+                accountEmail: Text(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary
+                  ),
+                  employee.email
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                 ),

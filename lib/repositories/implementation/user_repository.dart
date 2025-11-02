@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
 import 'package:ims_mobile/services/user_service.dart';
 
-import '../core/errors/failures.dart';
-import '../core/typedefs/result.dart';
+import '../../core/errors/failures.dart';
+import '../../core/typedefs/result.dart';
 
 final userRepositoryProvider = Provider<UserRespository>((ref) {
   final userService = ref.watch(userServiceProvider);
@@ -21,7 +21,7 @@ class UserRespository {
     try {
       final profileResponse = await _userService.fetchUserProfile();
 
-      final profile = Employee.toEmployee(profileResponse);
+      final profile = profileResponse.toEmployee();
 
       return Success(profile);
     } on DioException catch (e) {

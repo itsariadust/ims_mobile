@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/repositories/auth_repository.dart';
+import 'package:ims_mobile/repositories/implementation/auth_repository.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
