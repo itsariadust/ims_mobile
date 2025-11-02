@@ -96,6 +96,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
           _selectedRole!
         );
         ref.invalidate(employeeListViewModelProvider);
+        ref.read(employeeListViewModelProvider.future);
         if (mounted) {
           GoRouter.of(context)..pop()..pop();
           ScaffoldMessenger.of(context).showSnackBar(
