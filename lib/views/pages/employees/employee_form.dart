@@ -87,13 +87,13 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
 
     try {
       if (widget.actionType == 'add') {
-        createUser(
-          _firstNameController.text,
-          _lastNameController.text,
-          _emailController.text,
-          _contactNumberController.text,
-          _passwordController.text,
-          _selectedRole!
+        final result = await createUser(
+          _firstNameController.text.trimRight(),
+          _lastNameController.text.trimRight(),
+          _emailController.text.trimRight(),
+          _contactNumberController.text.trimRight(),
+          _passwordController.text.trimRight(),
+          _selectedRole!.trimRight()
         );
         ref.invalidate(employeeListViewModelProvider);
         ref.read(employeeListViewModelProvider.future);
