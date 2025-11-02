@@ -77,8 +77,11 @@ class EmployeeDetailScreen extends ConsumerWidget {
               onPressed: () {
                 context.pushNamed(
                   'employeeEdit',
+                  queryParameters: {
+                    'actionType': 'edit'
+                  },
                   pathParameters: {
-                    'employee': employee.id.toString()
+                    'id': employee.id.toString()
                   },
                   extra: employee
                 );

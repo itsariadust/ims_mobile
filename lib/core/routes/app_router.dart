@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ims_mobile/views/pages/employees/employee_detail.dart';
+import 'package:ims_mobile/domain/entities/employee/employee.dart';
+import 'package:ims_mobile/views/pages/employees/employee_form.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/inventory.dart';
@@ -12,11 +13,12 @@ import 'package:ims_mobile/views/pages/suppliers.dart';
 import 'package:ims_mobile/views/pages/transactions.dart';
 import 'package:ims_mobile/core/routes/transitions.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKeyProvider = Provider((ref) => GlobalKey<NavigatorState>());
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final rootNavigatorKey = ref.read(rootNavigatorKeyProvider);
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     routes: [
       GoRoute(
@@ -98,6 +100,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        name: 'employeeAdd',
+        path: '/employee/add',
+        builder: (BuildContext context, GoRouterState state) {
+          final String? actionType = state.uri.queryParameters['actionType'];
+          final Employee? employeeObject = state.extra as Employee?;
+          return EmployeeForm(
+            actionType: actionType,
+            employee: employeeObject,
+          );
+        },
+      ),
+      GoRoute(
+        name: 'employeeEdit',
+        path: '/employee/:id',
+        builder: (BuildContext context, GoRouterState state) {
+          final Employee employeeObject = state.extra as Employee;
+          return EmployeeForm(
+            employee: employeeObject, // Full data for editing
+          );
+        },
       ),
     ],
   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class FloatingActionMenu extends ConsumerWidget {
   const FloatingActionMenu({super.key, required this.currentIndex});
@@ -13,11 +14,11 @@ class FloatingActionMenu extends ConsumerWidget {
       distance: 72,
       type: ExpandableFabType.up,
       childrenAnimation: ExpandableFabAnimation.none,
-      children: _getFabOptions(currentIndex),
+      children: _getFabOptions(context, currentIndex),
     );
   }
 
-  List<Widget> _getFabOptions(int currentIndex) {
+  List<Widget> _getFabOptions(BuildContext context, int currentIndex) {
     switch (currentIndex) {
       case 0:
         return [
@@ -73,7 +74,9 @@ class FloatingActionMenu extends ConsumerWidget {
             heroTag: null,
             label: const Text('Add Employee'),
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              GoRouter.of(context).pushNamed('employeeAdd', queryParameters: {'actionType': 'add'});
+            },
           ),
         ];
       default:
