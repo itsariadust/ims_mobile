@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
+import 'package:ims_mobile/core/functions/add_employee.dart';
+import 'package:ims_mobile/viewmodels/employee/employee_list_viewmodel.dart';
 
 class EmployeeForm extends ConsumerStatefulWidget {
   const EmployeeForm({super.key, this.employee, this.actionType});
@@ -76,6 +78,40 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
     });
   }
 
+  Future<void> _onSave() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    try {
+      if (widget.actionType == 'add') {
+        createUser(
+          _firstNameController.text,
+          _lastNameController.text,
+          _emailController.text,
+          _contactNumberController.text,
+          _passwordController.text,
+          _selectedRole!
+        );
+        ref.invalidate(employeeListViewModelProvider);
+        if (mounted) {
+          GoRouter.of(context)..pop()..pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Employee added successfully.'))
+          );
+        }
+      }
+      if (widget.actionType == 'edit') {
+        // TODO: edit employee function call
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'))
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,12 +150,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
         ),
         title: _setTitle(),
         actions: [
-          TextButton(
-            onPressed: _isFormModified ? () {
-              // TODO: implement saving methods
-            } : null,
-            child: const Text('SAVE')
-          )
+          TextButton(onPressed: _isFormModified ? _onSave : null, child: const Text('SAVE'))
         ],
       ),
       body: Container(
@@ -152,6 +183,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
               if (widget.actionType == 'add')
                 TextFormField(
                   controller: _passwordController,
+                  obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Password',
                   )
