@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
 import 'package:ims_mobile/core/functions/add_employee.dart';
 import 'package:ims_mobile/viewmodels/employee/employee_list_viewmodel.dart';
@@ -95,13 +96,22 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
           _passwordController.text.trimRight(),
           _selectedRole!.trimRight()
         );
-        ref.invalidate(employeeListViewModelProvider);
-        ref.read(employeeListViewModelProvider.future);
-        if (mounted) {
-          GoRouter.of(context)..pop()..pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Employee added successfully.'))
-          );
+
+        if (!mounted) return;
+
+        GoRouter.of(context).pop();
+
+        switch (result) {
+          case Success():
+            GoRouter.of(context).pop();
+            ref.refresh(employeeListViewModelProvider.notifier).refresh();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Employee added successfully.'))
+            );
+          case FailureResult():
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error adding employee.'))
+            );
         }
       }
       if (widget.actionType == 'edit') {
