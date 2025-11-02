@@ -16,7 +16,8 @@ class EmployeesScreen extends ConsumerWidget {
         data: (employees) {
           return RefreshIndicator(
             onRefresh: () async {
-              return await ref.refresh(employeeListViewModelProvider.future);
+              ref.invalidate(employeeListViewModelProvider);
+              return await ref.read(employeeListViewModelProvider.future);
             },
             child: ListView.builder(
               itemCount: employees.length,

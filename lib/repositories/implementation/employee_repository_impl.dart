@@ -13,13 +13,15 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   EmployeeRepositoryImpl(this._employeeService);
 
   @override
-  Future<List<Employee>> getEmployeeList() async {
+  Stream<List<Employee>> getEmployeeList() {
     try {
-      final employeeList = await _employeeService.fetchAllEmployees();
+      final employeeListStream = _employeeService.getEmployeeStream();
 
-      return employeeList.map((employee) => employee.toEmployee()).toList();
+      return employeeListStream.map((employee) {
+        return employee.map((e) => e.toEmployee()).toList();
+      });
     } catch (e) {
-      rethrow;
+      return Stream.error(e);
     }
   }
 
