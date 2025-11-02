@@ -45,6 +45,7 @@ dependencies:
   mockito: ^5.5.0
   supabase_flutter: ^2.10.3
   animations: ^2.1.0
+  flutter_expandable_fab: ^2.5.2
 
 dev_dependencies:
   flutter_test:

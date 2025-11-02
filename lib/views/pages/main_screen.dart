@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/views/components/fam.dart';
 import 'package:ims_mobile/views/components/navigation_drawer.dart';
 
 class MainScreen extends StatelessWidget {
@@ -52,13 +54,8 @@ class MainScreen extends StatelessWidget {
           child: navigationShell,
         ),
       ),
-      // The shell will display the correct page
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implement your FAB logic based on the current route
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: FloatingActionMenu(currentIndex: currentIndex),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (index) => _onItemTapped(index, context),
