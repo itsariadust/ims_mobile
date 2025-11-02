@@ -18,6 +18,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _contactNumberController = TextEditingController();
+  final _passwordController = TextEditingController();
   String? _selectedRole;
 
   bool _isFormModified = false;
@@ -38,6 +39,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
     _lastNameController.addListener(_checkForChanges);
     _emailController.addListener(_checkForChanges);
     _contactNumberController.addListener(_checkForChanges);
+    _passwordController.addListener(_checkForChanges);
   }
 
   @override
@@ -46,6 +48,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
     _lastNameController.dispose();
     _emailController.dispose();
     _contactNumberController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -56,7 +59,8 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
         _isFormModified = _firstNameController.text.isNotEmpty ||
             _lastNameController.text.isNotEmpty ||
             _emailController.text.isNotEmpty ||
-            _contactNumberController.text.isNotEmpty;
+            _contactNumberController.text.isNotEmpty ||
+            _passwordController.text.isNotEmpty;
       });
       return;
     }
@@ -144,6 +148,14 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
                   labelText: 'Email',
                 ),
               ),
+              const SizedBox(height: 16),
+              if (widget.actionType == 'add')
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  )
+                ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _contactNumberController,
