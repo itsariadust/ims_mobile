@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/viewmodels/employee/employee_detail_viewmodel.dart';
 
 class EmployeeDetailScreen extends ConsumerWidget {
@@ -70,9 +71,19 @@ class EmployeeDetailScreen extends ConsumerWidget {
                 const Divider(),
               ],
             ),
-            const SizedBox(height: 24), // Spacing before the button.
+            const SizedBox(height: 24),
+            // Edit button
             FilledButton.icon(
-              onPressed: () { /* TODO: Implement edit action */ },
+              onPressed: () {
+                context.pushNamed(
+                  'employeeEdit',
+                  pathParameters: {
+                    'employee': employee.id.toString()
+                  },
+                  extra: employee
+                );
+                context.pop();
+              },
               icon: const Icon(Icons.edit_outlined),
               label: const Text('Edit Employee'),
               style: FilledButton.styleFrom(
@@ -80,7 +91,46 @@ class EmployeeDetailScreen extends ConsumerWidget {
                 textStyle: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            // Deactivate button
+            FilledButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Deactivate employee?'),
+                    content: const Text('Are you sure you want to deactivate this employee?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel')
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Employee deactivated successfully.'))
+                          );
+                        },
+                        child: Text('Yes')
+                      ),
+                    ]
+                  )
+                );
+              },
+              icon: const Icon(Icons.close),
+              label: const Text('Deactivate Employee'),
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                textStyle: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            const SizedBox(height: 8),
           ],
         );
       },
