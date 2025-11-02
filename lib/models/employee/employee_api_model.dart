@@ -27,7 +27,8 @@ class EmployeeApiModel {
   Employee toEmployee() {
     return Employee(
       id: id,
-      fullName: '$firstName $lastName',
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       contactNumber: contactNumber,
       role: role
