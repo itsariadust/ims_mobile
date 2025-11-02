@@ -32,7 +32,7 @@ class EmployeesScreen extends ConsumerWidget {
                       builder: (context) {
                         return DraggableScrollableSheet(
                           expand: false,
-                          initialChildSize: 0.6,
+                          initialChildSize: 0.65,
                           minChildSize: 0.4,
                           maxChildSize: 1,
                           builder: (context, scrollController) {
