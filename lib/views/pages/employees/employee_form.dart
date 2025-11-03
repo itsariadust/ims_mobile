@@ -87,35 +87,41 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
     );
 
     try {
-      if (widget.actionType == 'add') {
-        final result = await createUser(
-          _firstNameController.text.trimRight(),
-          _lastNameController.text.trimRight(),
-          _emailController.text.trimRight(),
-          _contactNumberController.text.trimRight(),
-          _passwordController.text.trimRight(),
-          _selectedRole!.trimRight()
-        );
+      switch (widget.actionType) {
+        case 'add':
+          final result = await createUser(
+              _firstNameController.text.trimRight(),
+              _lastNameController.text.trimRight(),
+              _emailController.text.trimRight(),
+              _contactNumberController.text.trimRight(),
+              _passwordController.text.trimRight(),
+              _selectedRole!.trimRight()
+          );
 
-        if (!mounted) return;
+          if (!mounted) return;
 
-        GoRouter.of(context).pop();
+          GoRouter.of(context).pop();
 
-        switch (result) {
-          case Success():
-            GoRouter.of(context).pop();
-            ref.refresh(employeeListViewModelProvider.notifier).refresh();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Employee added successfully.'))
-            );
-          case FailureResult():
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Error adding employee.'))
-            );
-        }
-      }
-      if (widget.actionType == 'edit') {
-        // TODO: edit employee function call
+          switch (result) {
+            case Success():
+              GoRouter.of(context).pop();
+              ref.refresh(employeeListViewModelProvider.notifier).refresh();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Employee added successfully.'))
+              );
+            case FailureResult():
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error adding employee.'))
+              );
+          }
+          break;
+        case 'edit':
+          // TODO: edit employee function call
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Invalid action type.'))
+          );
       }
     } catch (e) {
       if (mounted) {
