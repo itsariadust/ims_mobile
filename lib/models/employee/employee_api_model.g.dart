@@ -9,6 +9,7 @@ part of 'employee_api_model.dart';
 EmployeeApiModel _$EmployeeApiModelFromJson(Map<String, dynamic> json) =>
     EmployeeApiModel(
       id: (json['id'] as num).toInt(),
+      uuid: json['uuid'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       email: json['email'] as String,
@@ -19,6 +20,7 @@ EmployeeApiModel _$EmployeeApiModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$EmployeeApiModelToJson(EmployeeApiModel instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'uuid': instance.uuid,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'email': instance.email,

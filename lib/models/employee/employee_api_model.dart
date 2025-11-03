@@ -5,6 +5,7 @@ part 'employee_api_model.g.dart';
 @JsonSerializable()
 class EmployeeApiModel {
   final int id;
+  final String uuid;
   final String firstName;
   final String lastName;
   final String email;
@@ -13,6 +14,7 @@ class EmployeeApiModel {
 
   EmployeeApiModel({
     required this.id,
+    required this.uuid,
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -27,6 +29,7 @@ class EmployeeApiModel {
   Employee toEmployee() {
     return Employee(
       id: id,
+      uuid: uuid,
       firstName: firstName,
       lastName: lastName,
       email: email,
