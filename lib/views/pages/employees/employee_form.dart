@@ -118,6 +118,9 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
         // TODO: edit employee function call
       }
     } catch (e) {
+      if (mounted) {
+        GoRouter.of(context).pop();
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e'))
       );
