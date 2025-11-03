@@ -34,7 +34,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
       _firstNameController.text = employee.firstName;
       _lastNameController.text = employee.lastName;
       _emailController.text = employee.email;
-      _contactNumberController.text = employee.contactNumber ?? '';
+      _contactNumberController.text = employee.contactNumber;
       _selectedRole = employee.role;
     }
 
@@ -71,7 +71,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
     final hasChanged = _firstNameController.text != employee.firstName ||
         _lastNameController.text != employee.lastName ||
         _emailController.text != employee.email ||
-        _contactNumberController.text != (employee.contactNumber ?? '') ||
+        _contactNumberController.text != employee.contactNumber ||
         _selectedRole != employee.role;
 
     setState(() {
