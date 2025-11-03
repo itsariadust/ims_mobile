@@ -21,6 +21,7 @@ void main() {
     final employeeDtoList = [
       EmployeeApiModel(
         id: 1,
+        uuid: 'uuid1',
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
@@ -29,6 +30,7 @@ void main() {
       ),
       EmployeeApiModel(
         id: 2,
+        uuid: 'uuid2',
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
