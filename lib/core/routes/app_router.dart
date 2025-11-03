@@ -117,8 +117,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'employeeEdit',
         path: '/employee/:id',
         builder: (BuildContext context, GoRouterState state) {
+          final String? actionType = state.uri.queryParameters['actionType'];
           final Employee employeeObject = state.extra as Employee;
           return EmployeeForm(
+            actionType: actionType,
             employee: employeeObject, // Full data for editing
           );
         },
