@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
-import 'package:ims_mobile/models/employee/employee_model.dart';
-import 'package:ims_mobile/repositories/user_repository.dart';
+import 'package:ims_mobile/domain/entities/employee/employee.dart';
+import 'package:ims_mobile/repositories/implementation/user_repository.dart';
 
 final userViewModelProvider = AsyncNotifierProvider<UserViewModel, Employee?>(
   UserViewModel.new,

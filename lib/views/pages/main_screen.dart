@@ -1,72 +1,92 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/views/components/fam.dart';
 import 'package:ims_mobile/views/components/navigation_drawer.dart';
-import 'package:ims_mobile/views/pages/home.dart';
-import 'package:ims_mobile/views/pages/inventory.dart';
-import 'package:ims_mobile/views/pages/suppliers.dart';
-import 'package:ims_mobile/views/pages/transactions.dart';
 
-class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+class MainScreen extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  ConsumerState<MainScreen> createState() => _MainScreenState();
-}
+  const MainScreen({
+    required this.navigationShell,
+    super.key,
+  });
 
-class _MainScreenState extends ConsumerState<MainScreen> {
-  int _selectedIndex = 0;
-
-  final List<_NavItem> _navItems = [
-    _NavItem('Home', Icons.home_outlined, Icons.home, HomeScreen()),
-    _NavItem('Inventory', Icons.inventory_2_outlined, Icons.inventory, InventoryScreen()),
-    _NavItem('Suppliers', Icons.store_outlined, Icons.store, SuppliersScreen()),
-    _NavItem('Transactions', Icons.receipt_outlined, Icons.receipt, TransactionsScreen()),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _onItemTapped(int index, BuildContext context) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = navigationShell.currentIndex;
+    final List<String> pageTitles = ['Home', 'Inventory', 'Suppliers', 'Transactions', 'Employees'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _navItems[_selectedIndex].label,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          pageTitles[currentIndex],
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.person)
-          )
+            onPressed: () {},
+            icon: const Icon(Icons.person),
+          ),
         ],
       ),
-      drawer: AppDrawer(),
-      body: _navItems[_selectedIndex].widget,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
-        destinations: _navItems.map((item) {
-          return NavigationDestination(
-            selectedIcon: Icon(item.selectedIcon),
-            icon: Icon(item.icon),
-            label: item.label,
+      drawer: const AppDrawer(),
+      body: PageTransitionSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) {
+          return FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
           );
-        }).toList(),
+        },
+        child: KeyedSubtree(
+          key: ValueKey(navigationShell.currentIndex),
+          child: navigationShell,
+        ),
+      ),
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: FloatingActionMenu(currentIndex: currentIndex),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) => _onItemTapped(index, context),
+        destinations: const [
+          NavigationDestination(
+            selectedIcon: Icon(Icons.home),
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.inventory),
+            icon: Icon(Icons.inventory_2_outlined),
+            label: 'Inventory',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.store),
+            icon: Icon(Icons.store_outlined),
+            label: 'Suppliers',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.receipt),
+            icon: Icon(Icons.receipt_outlined),
+            label: 'Transactions',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.person_2),
+            icon: Icon(Icons.person_2_outlined),
+            label: 'Employees',
+          ),
+        ],
       ),
     );
   }
-}
-
-class _NavItem {
-  final String label;
-  final IconData icon;
-  final IconData selectedIcon;
-  final Widget widget;
-
-  const _NavItem(this.label, this.icon, this.selectedIcon, this.widget);
 }

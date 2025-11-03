@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ims_mobile/routes/routes.dart';
+import 'package:ims_mobile/core/routes/routes.dart';
 import 'package:ims_mobile/viewmodels/auth/auth_viewmodel.dart';
 import 'package:ims_mobile/viewmodels/user/user_viewmodel.dart';
 
@@ -27,8 +27,18 @@ class AppDrawer extends ConsumerWidget {
             ),
             data: (employee) {
               return UserAccountsDrawerHeader(
-                accountName: Text('${employee?.firstName} ${employee?.lastName}'),
-                accountEmail: Text(employee!.email),
+                accountName: Text(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary
+                  ),
+                  employee!.fullName
+                ),
+                accountEmail: Text(
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary
+                  ),
+                  employee.email
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                 ),

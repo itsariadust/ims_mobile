@@ -17,19 +17,8 @@ class InfoCards extends StatelessWidget {
         SizedBox(height: 16),
         Card(
           child: ListTile(
-            leading: InkWell(
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary
-                ),
-                child: Icon(
-                  Icons.inventory,
-                  color: Colors.white,
-                ),
-              ),
+            leading: CircleAvatar(
+              child: Icon(Icons.inventory),
             ),
             title: Text(
               style: Theme.of(context).textTheme.headlineLarge,
@@ -45,19 +34,8 @@ class InfoCards extends StatelessWidget {
         SizedBox(height: 8),
         Card(
           child: ListTile(
-            leading: InkWell(
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary
-                ),
-                child: Icon(
-                  Icons.warning,
-                  color: Colors.white,
-                ),
-              ),
+            leading: CircleAvatar(
+              child: Icon(Icons.warning),
             ),
             title: Text(
               style: Theme.of(context).textTheme.headlineLarge,
@@ -73,19 +51,8 @@ class InfoCards extends StatelessWidget {
         SizedBox(height: 8),
         Card(
           child: ListTile(
-            leading: InkWell(
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary
-                ),
-                child: Icon(
-                  Icons.error,
-                  color: Colors.white,
-                ),
-              ),
+            leading: CircleAvatar(
+              child: Icon(Icons.error),
             ),
             title: Text(
               style: Theme.of(context).textTheme.headlineLarge,

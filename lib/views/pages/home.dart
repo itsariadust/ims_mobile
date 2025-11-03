@@ -23,7 +23,7 @@ class HomeScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.w500
                 ),
-                'Welcome, ${user?.firstName}!'
+                'Welcome, ${user?.fullName.split(" ")[0]}!'
               );
             }
           ),
