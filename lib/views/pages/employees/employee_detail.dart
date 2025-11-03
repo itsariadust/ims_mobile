@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/functions/deactivate_employee.dart';
+import 'package:ims_mobile/core/typedefs/result.dart';
+import 'package:ims_mobile/domain/entities/employee/employee.dart';
 import 'package:ims_mobile/viewmodels/employee/employee_detail_viewmodel.dart';
+import 'package:ims_mobile/viewmodels/employee/employee_list_viewmodel.dart';
 
 class EmployeeDetailScreen extends ConsumerWidget {
   final int employeeId;
@@ -111,13 +115,8 @@ class EmployeeDetailScreen extends ConsumerWidget {
                         child: Text('Cancel')
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                            ..pop()
-                            ..pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Employee deactivated successfully.'))
-                          );
+                        onPressed: () async {
+                          await _onDeactivate(context, employee, ref);
                         },
                         child: Text('Yes')
                       ),
@@ -150,5 +149,36 @@ class EmployeeDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _onDeactivate(BuildContext context, Employee employee, WidgetRef ref) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    final result = await deactivateUser(employee.uuid);
+
+    if (!context.mounted) return;
+
+    GoRouter.of(context).pop();
+
+    switch (result) {
+      case Success():
+        GoRouter.of(context)..pop()..pop();
+        ref.refresh(employeeListViewModelProvider.notifier).refresh();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Employee deactivated successfully.'))
+        );
+        break;
+      case FailureResult():
+        GoRouter.of(context)..pop()..pop();
+        ref.refresh(employeeListViewModelProvider.notifier).refresh();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error deactivating employee.'))
+        );
+        break;
+    }
   }
 }
