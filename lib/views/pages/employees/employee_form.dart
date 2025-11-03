@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/functions/edit_employee.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
 import 'package:ims_mobile/core/functions/add_employee.dart';
@@ -109,14 +110,42 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Employee added successfully.'))
               );
+              break;
             case FailureResult():
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Error adding employee.'))
               );
+              break;
           }
           break;
         case 'edit':
-          // TODO: edit employee function call
+          final result = await editUser(
+              widget.employee!.uuid,
+              _firstNameController.text.trimRight(),
+              _lastNameController.text.trimRight(),
+              _emailController.text.trimRight(),
+              _contactNumberController.text.trimRight(),
+              _selectedRole!.trimRight()
+          );
+
+          if (!mounted) return;
+
+          GoRouter.of(context).pop();
+
+          switch (result) {
+            case Success():
+              GoRouter.of(context).pop();
+              ref.refresh(employeeListViewModelProvider.notifier).refresh();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Employee edited successfully.'))
+              );
+              break;
+            case FailureResult():
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error editing employee.'))
+              );
+              break;
+          }
           break;
         default:
           ScaffoldMessenger.of(context).showSnackBar(
@@ -179,6 +208,7 @@ class _EmployeeFormState extends ConsumerState<EmployeeForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(widget.actionType.toString()),
               TextFormField(
                 controller: _firstNameController,
                 decoration: const InputDecoration(
