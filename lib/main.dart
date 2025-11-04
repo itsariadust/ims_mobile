@@ -37,7 +37,7 @@ class MyApp extends ConsumerWidget {
         brightness: Brightness.dark,
         colorSchemeSeed: Colors.blue,
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.system,
     );
   }
 }
