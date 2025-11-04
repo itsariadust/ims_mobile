@@ -1,3 +1,4 @@
+import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'supplier_api_model.g.dart';
@@ -20,4 +21,14 @@ class SupplierApiModel {
   factory SupplierApiModel.fromJson(Map<String, dynamic> json) => _$SupplierApiModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SupplierApiModelToJson(this);
+
+  Supplier toSupplier() {
+    return Supplier(
+        id: id,
+        companyName: companyName,
+        contactPerson: contactPerson,
+        email: email,
+        contactNumber: contactNumber
+    );
+  }
 }
