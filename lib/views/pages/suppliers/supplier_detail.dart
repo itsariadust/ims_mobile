@@ -76,7 +76,17 @@ class SupplierDetailScreen extends ConsumerWidget {
             // Edit button
             FilledButton.icon(
               onPressed: () {
-                
+                context.pushNamed(
+                  'supplierEdit',
+                  queryParameters: {
+                    'actionType': 'edit'
+                  },
+                  pathParameters: {
+                    'id': supplier.id.toString()
+                  },
+                  extra: supplier
+                );
+                context.pop();
               },
               icon: const Icon(Icons.edit_outlined),
               label: const Text('Edit Supplier'),

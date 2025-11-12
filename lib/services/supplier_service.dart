@@ -25,4 +25,13 @@ class SupplierService {
       throw Exception(e.toString());
     }
   }
+
+  Future<SupplierApiModel> fetchSupplier(int id) async {
+    try {
+      final response = await _dio.get('$_supplierEndpoint/$id');
+      return SupplierApiModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

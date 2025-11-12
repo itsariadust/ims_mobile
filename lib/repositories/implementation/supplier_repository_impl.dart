@@ -23,4 +23,14 @@ class SupplierRepositoryImpl implements SupplierRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Supplier> getSupplier(int id) async {
+    try {
+      final supplier = await _supplierService.fetchSupplier(id);
+      return supplier.toSupplier();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
