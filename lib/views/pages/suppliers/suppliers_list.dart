@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ims_mobile/core/routes/app_router.dart'; // to be used later
+import 'package:ims_mobile/core/routes/app_router.dart';
 import 'package:ims_mobile/viewmodels/supplier/supplier_list_viewmodel.dart';
+import 'package:ims_mobile/views/pages/suppliers/supplier_detail.dart';
 
 class SuppliersScreen extends ConsumerWidget {
   const SuppliersScreen({super.key});
@@ -9,7 +10,7 @@ class SuppliersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final supplierListAsyncValue = ref.watch(supplierListViewModelProvider);
-    // final rootContext = ref.read(appRouterProvider).routerDelegate.navigatorKey.currentContext;
+    final rootContext = ref.read(appRouterProvider).routerDelegate.navigatorKey.currentContext;
     return Scaffold(
       body: supplierListAsyncValue.when(
         data: (suppliers) {
@@ -24,7 +25,25 @@ class SuppliersScreen extends ConsumerWidget {
                 final supplier = suppliers[index];
                 return ListTile(
                   onTap: () {
-
+                    showModalBottomSheet(
+                      context: rootContext ?? context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      enableDrag: true,
+                      builder: (context) {
+                        return DraggableScrollableSheet(
+                          expand: false,
+                          initialChildSize: 0.7,
+                          minChildSize: 0.4,
+                          maxChildSize: 1,
+                          builder: (context, scrollController) {
+                            return SupplierDetailScreen(
+                              supplierId: supplier.id,
+                            );
+                          }
+                        );
+                      }
+                    );
                   },
                   key: ValueKey(supplier!.id),
                   leading: CircleAvatar(
