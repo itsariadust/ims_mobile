@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/typedefs/result.dart';
+import 'package:ims_mobile/domain/entities/supplier/new_supplier.dart';
 import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
+import 'package:ims_mobile/viewmodels/supplier/supplier_form_viewmodel.dart';
+import 'package:ims_mobile/viewmodels/supplier/supplier_list_viewmodel.dart';
 
 class SupplierForm extends ConsumerStatefulWidget {
   const SupplierForm({super.key, this.supplier, this.actionType});
@@ -71,7 +75,88 @@ class _SupplierFormState extends ConsumerState<SupplierForm> {
   }
 
   Future<void> _onSave() async {
-    throw UnimplementedError();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    try {
+      switch (widget.actionType) {
+        case 'add':
+          final newSupplierData = NewSupplier(
+            companyName: _companyNameController.text.trim(),
+            contactPerson: _contactPersonController.text.trim(),
+            email: _emailController.text.trim(),
+            contactNumber: _contactNumberController.text.trim(),
+            isActive: true
+          );
+
+          final newSupplier = await ref.read(supplierFormViewModelProvider).addSupplier(newSupplierData);
+
+          if (!mounted) return;
+
+          GoRouter.of(context).pop();
+
+          switch (newSupplier) {
+            case Success():
+              GoRouter.of(context).pop();
+              ref.refresh(supplierListViewModelProvider.notifier).refresh();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Supplier added successfully.'))
+              );
+              break;
+            case FailureResult():
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error adding supplier.'))
+              );
+              break;
+          }
+          break;
+        case 'edit':
+          final updatedSupplierData = Supplier(
+            id: widget.supplier!.id,
+            companyName: _companyNameController.text.trim(),
+            contactPerson: _contactPersonController.text.trim(),
+            email: _emailController.text.trim(),
+            contactNumber: _contactNumberController.text.trim(),
+            isActive: widget.supplier!.isActive
+          );
+
+          final updatedSupplier = await ref.read(supplierFormViewModelProvider).updateSupplier(updatedSupplierData);
+
+          if (!mounted) return;
+
+          GoRouter.of(context).pop();
+
+          switch (updatedSupplier) {
+            case Success():
+              GoRouter.of(context).pop();
+              ref.refresh(supplierListViewModelProvider.notifier).refresh();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Supplier added successfully.'))
+              );
+              break;
+            case FailureResult():
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error adding supplier.'))
+              );
+              break;
+          }
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Invalid action type.'))
+          );
+      }
+    } catch (e) {
+      if (mounted) {
+        GoRouter.of(context).pop();
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'))
+      );
+    }
   }
 
   @override
