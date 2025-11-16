@@ -13,6 +13,7 @@ SupplierApiModel _$SupplierApiModelFromJson(Map<String, dynamic> json) =>
       contactPerson: json['contactPerson'] as String,
       email: json['email'] as String,
       contactNumber: json['contactNumber'] as String,
+      isActive: json['isActive'] as bool,
     );
 
 Map<String, dynamic> _$SupplierApiModelToJson(SupplierApiModel instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$SupplierApiModelToJson(SupplierApiModel instance) =>
       'contactPerson': instance.contactPerson,
       'email': instance.email,
       'contactNumber': instance.contactNumber,
+      'isActive': instance.isActive,
     };

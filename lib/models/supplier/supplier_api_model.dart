@@ -9,6 +9,7 @@ class SupplierApiModel {
   final String contactPerson;
   final String email;
   final String contactNumber;
+  final bool isActive;
 
   SupplierApiModel({
     required this.id,
@@ -16,11 +17,23 @@ class SupplierApiModel {
     required this.contactPerson,
     required this.email,
     required this.contactNumber,
+    required this.isActive
   });
 
   factory SupplierApiModel.fromJson(Map<String, dynamic> json) => _$SupplierApiModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SupplierApiModelToJson(this);
+
+  factory SupplierApiModel.fromDomain(Supplier supplier) {
+    return SupplierApiModel(
+      id: supplier.id,
+      companyName: supplier.companyName,
+      contactPerson: supplier.contactPerson,
+      email: supplier.email,
+      contactNumber: supplier.contactNumber,
+      isActive: supplier.isActive,
+    );
+  }
 
   Supplier toSupplier() {
     return Supplier(
@@ -28,7 +41,8 @@ class SupplierApiModel {
         companyName: companyName,
         contactPerson: contactPerson,
         email: email,
-        contactNumber: contactNumber
+        contactNumber: contactNumber,
+        isActive: isActive,
     );
   }
 }
