@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ims_mobile/domain/entities/supplier/new_supplier.dart';
 import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
+import 'package:ims_mobile/models/supplier/new_supplier_api_model.dart';
+import 'package:ims_mobile/models/supplier/supplier_api_model.dart';
 import 'package:ims_mobile/repositories/supplier_repository.dart';
 import 'package:ims_mobile/services/supplier_service.dart';
 
@@ -32,5 +35,19 @@ class SupplierRepositoryImpl implements SupplierRepository {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  Future<Supplier> addSupplier(NewSupplier supplier) async {
+    final newSupplierModel = NewSupplierApiModel.fromDomain(supplier);
+    final newSupplier =  await _supplierService.addSupplier(newSupplierModel);
+    return newSupplier.toSupplier();
+  }
+
+  @override
+  Future<Supplier> updateSupplier(Supplier supplier) async {
+    final supplierModel = SupplierApiModel.fromDomain(supplier);
+    final updatedSupplier = await _supplierService.updateSupplier(supplier.id, supplierModel);
+    return updatedSupplier.toSupplier();
   }
 }
