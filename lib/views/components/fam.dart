@@ -50,7 +50,9 @@ class FloatingActionMenu extends ConsumerWidget {
             heroTag: null,
             label: const Text('New Supplier'),
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              GoRouter.of(context).pushNamed('supplierAdd', queryParameters: {'actionType': 'add'});
+            },
           ),
         ];
       case 3: // Transactions Page
