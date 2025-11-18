@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/typedefs/result.dart';
+import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
 import 'package:ims_mobile/viewmodels/supplier/supplier_detail_viewmodel.dart';
+import 'package:ims_mobile/viewmodels/supplier/supplier_list_viewmodel.dart';
 
 class SupplierDetailScreen extends ConsumerWidget {
   final int supplierId;
@@ -70,6 +73,12 @@ class SupplierDetailScreen extends ConsumerWidget {
                   ),
                 ),
                 const Divider(),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.circle),
+                  title: const Text('Status'),
+                  subtitle: Text(supplier.isActive.toString()),
+                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -96,38 +105,47 @@ class SupplierDetailScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 8),
-            // Deactivate button
-            FilledButton.icon(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Deactivate supplier?'),
-                    content: const Text('Are you sure you want to deactivate this supplier?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Cancel')
+            () {
+              final bool isActive = supplier.isActive;
+              final String label = isActive ? 'Deactivate Supplier' : 'Activate Supplier';
+              final IconData icon = isActive ? Icons.close : Icons.check;
+              final Color buttonColor = isActive ? Theme.of(context).colorScheme.error : Colors.green;
+              final String dialogTitle = isActive ? 'Deactivate supplier?' : 'Activate supplier?';
+              final String dialogContent = isActive ? 'Are you sure you want to deactivate this supplier?' : 'Are you sure you want to activate this supplier?';
+
+              return FilledButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(dialogTitle),
+                      content: Text(dialogContent),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await _onStatusChange(context, supplier, ref);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
                     ),
-                    TextButton(
-                        onPressed: () async {
-                        },
-                        child: Text('Yes')
-                      ),
-                    ]
-                  )
-                );
-              },
-              icon: const Icon(Icons.close),
-              label: const Text('Deactivate Supplier'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                textStyle: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+                  );
+                },
+                icon: Icon(icon),
+                label: Text(label),
+                style: FilledButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                ),
+              );
+            }(),
             const SizedBox(height: 8),
           ]
         );
@@ -145,5 +163,44 @@ class SupplierDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _onStatusChange(BuildContext context, Supplier supplier, WidgetRef ref) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator())
+    );
+
+    final notifier = ref.read(supplierDetailViewModelProvider(supplier.id).notifier);
+
+    Result<dynamic> result;
+
+    if (supplier.isActive == true) {
+      result = await notifier.deactivate(supplier.id);
+    } else {
+      result = await notifier.reactivate(supplier.id);
+    }
+
+    if (!context.mounted) return;
+
+    GoRouter.of(context).pop();
+
+    switch (result) {
+      case Success():
+        GoRouter.of(context)..pop()..pop();
+        ref.refresh(supplierListViewModelProvider.notifier).refresh();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Supplier status changed successfully'))
+        );
+        break;
+      case FailureResult():
+        GoRouter.of(context)..pop()..pop();
+        ref.refresh(supplierListViewModelProvider.notifier).refresh();
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to change supplier status'))
+        );
+        break;
+    }
   }
 }

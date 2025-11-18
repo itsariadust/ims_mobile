@@ -61,4 +61,22 @@ class SupplierService {
       throw Exception('An unknown error occurred');
     }
   }
+
+  Future<Response<dynamic>> deactivateSupplier(int id) async {
+    try {
+      final response = await _dio.patch('$_supplierEndpoint/$id/disable');
+      return response;
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<Response<dynamic>> reactivateSupplier(int id) async {
+    try {
+      final response = await _dio.patch('$_supplierEndpoint/$id/enable');
+      return response;
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
