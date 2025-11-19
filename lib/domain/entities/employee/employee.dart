@@ -8,6 +8,7 @@ class Employee {
   final String email;
   final String contactNumber;
   final String role;
+  final bool isActive;
 
   Employee({
     required this.id,
@@ -17,6 +18,7 @@ class Employee {
     required this.email,
     required this.contactNumber,
     required this.role,
+    required this.isActive
   });
 
   String get fullName => '$firstName $lastName';
@@ -30,6 +32,7 @@ class Employee {
       email: apiModel.email,
       contactNumber: apiModel.contactNumber,
       role: apiModel.role,
+      isActive: apiModel.isActive
     );
   }
 }

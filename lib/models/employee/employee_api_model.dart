@@ -11,6 +11,7 @@ class EmployeeApiModel {
   final String email;
   final String contactNumber;
   final String role;
+  final bool isActive;
 
   EmployeeApiModel({
     required this.id,
@@ -19,7 +20,8 @@ class EmployeeApiModel {
     required this.lastName,
     required this.email,
     required this.contactNumber,
-    required this.role
+    required this.role,
+    required this.isActive
   });
 
   factory EmployeeApiModel.fromJson(Map<String, dynamic> json) => _$EmployeeApiModelFromJson(json);
@@ -34,7 +36,8 @@ class EmployeeApiModel {
       lastName: lastName,
       email: email,
       contactNumber: contactNumber,
-      role: role
+      role: role,
+      isActive: isActive
     );
   }
 }

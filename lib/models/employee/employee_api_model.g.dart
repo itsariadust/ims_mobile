@@ -15,6 +15,7 @@ EmployeeApiModel _$EmployeeApiModelFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       contactNumber: json['contactNumber'] as String,
       role: json['role'] as String,
+      isActive: json['isActive'] as bool,
     );
 
 Map<String, dynamic> _$EmployeeApiModelToJson(EmployeeApiModel instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$EmployeeApiModelToJson(EmployeeApiModel instance) =>
       'email': instance.email,
       'contactNumber': instance.contactNumber,
       'role': instance.role,
+      'isActive': instance.isActive,
     };

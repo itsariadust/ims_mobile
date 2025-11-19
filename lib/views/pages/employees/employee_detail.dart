@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ims_mobile/core/functions/activate_employee.dart';
 import 'package:ims_mobile/core/functions/deactivate_employee.dart';
 import 'package:ims_mobile/core/typedefs/result.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
@@ -73,6 +74,12 @@ class EmployeeDetailScreen extends ConsumerWidget {
                   ),
                 ),
                 const Divider(),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.circle),
+                  title: const Text('Status'),
+                  subtitle: Text(employee.isActive.toString()),
+                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -100,38 +107,79 @@ class EmployeeDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             // Deactivate button
-            FilledButton.icon(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Deactivate employee?'),
-                    content: const Text('Are you sure you want to deactivate this employee?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Cancel')
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          await _onDeactivate(context, employee, ref);
-                        },
-                        child: Text('Yes')
-                      ),
-                    ]
-                  )
-                );
-              },
-              icon: const Icon(Icons.close),
-              label: const Text('Deactivate Employee'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                textStyle: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+                () {
+              final bool isActive = employee.isActive;
+              final String label = isActive ? 'Deactivate Employee' : 'Activate Employee';
+              final IconData icon = isActive ? Icons.close : Icons.check;
+              final Color buttonColor = isActive ? Theme.of(context).colorScheme.error : Colors.green;
+              final String dialogTitle = isActive ? 'Deactivate employee?' : 'Activate employee?';
+              final String dialogContent = isActive ? 'Are you sure you want to deactivate this employee?' : 'Are you sure you want to activate this employee?';
+
+              return FilledButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(dialogTitle),
+                      content: Text(dialogContent),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            await _onStatusChange(context, employee, ref);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: Icon(icon),
+                label: Text(label),
+                style: FilledButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                ),
+              );
+            }(),
+            // FilledButton.icon(
+            //   onPressed: () {
+            //     showDialog(
+            //       context: context,
+            //       builder: (context) => AlertDialog(
+            //         title: const Text('Deactivate employee?'),
+            //         content: const Text('Are you sure you want to deactivate this employee?'),
+            //         actions: [
+            //           TextButton(
+            //             onPressed: () {
+            //               Navigator.of(context).pop();
+            //             },
+            //             child: Text('Cancel')
+            //           ),
+            //           TextButton(
+            //             onPressed: () async {
+            //               await _onDeactivate(context, employee, ref);
+            //             },
+            //             child: Text('Yes')
+            //           ),
+            //         ]
+            //       )
+            //     );
+            //   },
+            //   icon: const Icon(Icons.close),
+            //   label: const Text('Deactivate Employee'),
+            //   style: FilledButton.styleFrom(
+            //     backgroundColor: Theme.of(context).colorScheme.error,
+            //     padding: const EdgeInsets.symmetric(vertical: 12),
+            //     textStyle: Theme.of(context).textTheme.titleMedium,
+            //   ),
+            // ),
             const SizedBox(height: 8),
           ],
         );
@@ -151,14 +199,20 @@ class EmployeeDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _onDeactivate(BuildContext context, Employee employee, WidgetRef ref) async {
+  Future<void> _onStatusChange(BuildContext context, Employee employee, WidgetRef ref) async {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => const Center(child: CircularProgressIndicator())
     );
 
-    final result = await deactivateUser(employee.uuid);
+    Result<dynamic> result;
+
+    if (employee.isActive == true) {
+      result = await deactivateUser(employee.uuid);
+    } else {
+      result = await activateUser(employee.uuid);
+    }
 
     if (!context.mounted) return;
 
