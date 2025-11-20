@@ -25,4 +25,13 @@ class ItemService {
       throw Exception(e.toString());
     }
   }
+
+  Future<ItemApiModel> fetchItem(int id) async {
+    try {
+      final response = await _dio.get('$_itemEndpoint/$id');
+      return ItemApiModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
