@@ -148,38 +148,6 @@ class EmployeeDetailScreen extends ConsumerWidget {
                 ),
               );
             }(),
-            // FilledButton.icon(
-            //   onPressed: () {
-            //     showDialog(
-            //       context: context,
-            //       builder: (context) => AlertDialog(
-            //         title: const Text('Deactivate employee?'),
-            //         content: const Text('Are you sure you want to deactivate this employee?'),
-            //         actions: [
-            //           TextButton(
-            //             onPressed: () {
-            //               Navigator.of(context).pop();
-            //             },
-            //             child: Text('Cancel')
-            //           ),
-            //           TextButton(
-            //             onPressed: () async {
-            //               await _onDeactivate(context, employee, ref);
-            //             },
-            //             child: Text('Yes')
-            //           ),
-            //         ]
-            //       )
-            //     );
-            //   },
-            //   icon: const Icon(Icons.close),
-            //   label: const Text('Deactivate Employee'),
-            //   style: FilledButton.styleFrom(
-            //     backgroundColor: Theme.of(context).colorScheme.error,
-            //     padding: const EdgeInsets.symmetric(vertical: 12),
-            //     textStyle: Theme.of(context).textTheme.titleMedium,
-            //   ),
-            // ),
             const SizedBox(height: 8),
           ],
         );
