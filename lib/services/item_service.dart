@@ -1,6 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ims_mobile/core/network/api_client.dart';
 import 'package:ims_mobile/models/item/item_api_model.dart';
+
+final itemServiceProvider = Provider<ItemService>((ref) {
+  return ItemService(ref.watch(apiClientProvider));
+});
 
 class ItemService {
   final Dio _dio;
