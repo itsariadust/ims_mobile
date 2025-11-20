@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/domain/entities/employee/employee.dart';
+import 'package:ims_mobile/domain/entities/item/item.dart';
 import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
 import 'package:ims_mobile/views/pages/employees/employee_form.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/home.dart';
+import 'package:ims_mobile/views/pages/items/item_detail.dart';
 import 'package:ims_mobile/views/pages/items/items_list.dart';
 import 'package:ims_mobile/views/pages/login.dart';
 import 'package:ims_mobile/views/pages/main_screen.dart';
@@ -158,11 +160,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'itemDetails',
         path: '/items/:id',
         builder: (BuildContext context, GoRouterState state) {
-          final String? actionType = state.uri.queryParameters['actionType'];
-          final Supplier supplierObject = state.extra as Supplier;
-          return SupplierForm(
-            actionType: actionType,
-            supplier: supplierObject, // Full data for editing
+          final Item itemObject = state.extra as Item;
+          return ItemDetailScreen(
+            item: itemObject, // Full data for editing
           );
         },
       ),
