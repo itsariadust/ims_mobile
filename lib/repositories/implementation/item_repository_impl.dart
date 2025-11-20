@@ -22,4 +22,14 @@ class ItemRepositoryImpl implements ItemRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Item> getItem(int id) {
+    try {
+      final itemService = _itemService.fetchItem(id);
+      return itemService.then((item) => item.toDomain());
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
