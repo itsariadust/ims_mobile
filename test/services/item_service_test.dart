@@ -17,7 +17,7 @@ void main() {
     itemService = ItemService(mockApiClient);
   });
 
-  final mockSuppliersList = [
+  final mockItemsList = [
     {
       "id": 1,
       "itemName": "Genuine Cowhide Leather Sheets",
@@ -48,10 +48,25 @@ void main() {
     },
   ];
 
+  final mockItem = {
+    "id": 1,
+    "itemName": "Genuine Cowhide Leather Sheets",
+    "category": "Leather",
+    "location": "Rack A1",
+    "supplier": {
+      "id": 1,
+      "companyName": "Luzon Leatherworks Trading"
+    },
+    "reorderLevel": 20,
+    "targetStockLevel": 100,
+    "currentStockLevel": 65,
+    "isActive": true
+  };
+
   group('ItemService', () {
     test('Fetch items list returns a List of ItemApiModels', () async {
       final response = Response(
-          data: mockSuppliersList,
+          data: mockItemsList,
           statusCode: 200,
           requestOptions: RequestOptions(path: '/items')
       );
@@ -61,7 +76,22 @@ void main() {
       final suppliers = await itemService.fetchAllItems();
 
       expect(suppliers, isA<List<ItemApiModel>>());
-      expect(suppliers.length, equals(mockSuppliersList.length));
+      expect(suppliers.length, equals(mockItemsList.length));
+    });
+
+    test('Fetch item returns an ItemApiModel', () async {
+      final response = Response(
+          data: mockItem,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/items/1')
+      );
+
+      when(mockDio.get('/items/1')).thenAnswer((_) async => response);
+
+      final item = await itemService.fetchItem(1);
+
+      expect(item, isA<ItemApiModel>());
+      expect(item.id, equals(mockItem['id']));
     });
   });
 }
