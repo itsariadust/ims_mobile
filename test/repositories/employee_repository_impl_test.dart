@@ -26,7 +26,8 @@ void main() {
         lastName: 'Doe',
         email: 'john.doe@example.com',
         contactNumber: '+1234567890',
-        role: 'ADMIN'
+        role: 'ADMIN',
+        isActive: true,
       ),
       EmployeeApiModel(
         id: 2,
@@ -35,7 +36,8 @@ void main() {
         lastName: 'Doe',
         email: 'jane.doe@example.com',
         contactNumber: '+123456789',
-        role: 'MANAGER'
+        role: 'MANAGER',
+        isActive: true
       )
     ];
 
