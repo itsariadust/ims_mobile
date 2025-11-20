@@ -6,7 +6,7 @@ import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
 import 'package:ims_mobile/views/pages/employees/employee_form.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/home.dart';
-import 'package:ims_mobile/views/pages/inventory.dart';
+import 'package:ims_mobile/views/pages/items/items_list.dart';
 import 'package:ims_mobile/views/pages/login.dart';
 import 'package:ims_mobile/views/pages/main_screen.dart';
 import 'package:ims_mobile/views/pages/splash.dart';
@@ -57,7 +57,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (context, state) => buildFadeThroughTransition(
                   context: context,
                   state: state,
-                  child: const InventoryScreen(),
+                  child: const ItemsScreen(),
                 )
               ),
             ],
@@ -144,6 +144,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         name: 'supplierEdit',
         path: '/supplier/:id',
+        builder: (BuildContext context, GoRouterState state) {
+          final String? actionType = state.uri.queryParameters['actionType'];
+          final Supplier supplierObject = state.extra as Supplier;
+          return SupplierForm(
+            actionType: actionType,
+            supplier: supplierObject, // Full data for editing
+          );
+        },
+      ),
+      // Item Details
+      GoRoute(
+        name: 'itemDetails',
+        path: '/items/:id',
         builder: (BuildContext context, GoRouterState state) {
           final String? actionType = state.uri.queryParameters['actionType'];
           final Supplier supplierObject = state.extra as Supplier;
