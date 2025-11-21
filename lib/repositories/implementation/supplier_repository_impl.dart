@@ -71,4 +71,14 @@ class SupplierRepositoryImpl implements SupplierRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<Supplier>> searchSuppliers(String query) async {
+    try {
+      final supplierList = await _supplierService.searchSuppliers(query);
+      return supplierList.map((supplier) => supplier.toDomain()).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

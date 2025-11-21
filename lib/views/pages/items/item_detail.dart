@@ -25,7 +25,16 @@ class ItemDetailScreen extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                // Handle edit navigation
+                context.pushNamed(
+                  'itemEdit',
+                  queryParameters: {
+                    'actionType': 'edit'
+                  },
+                  pathParameters: {
+                    'id': item!.id.toString()
+                  },
+                  extra: item
+                );
               },
             ),
           ],
@@ -223,6 +232,7 @@ class ItemDetailScreen extends ConsumerWidget {
       child: ListTile(
         leading: const Icon(Icons.storefront),
         title: Text(item.supplier.companyName),
+        subtitle: Text(item.supplier.contactPerson),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           throw UnimplementedError();

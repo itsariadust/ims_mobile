@@ -9,4 +9,5 @@ abstract class SupplierRepository {
   Future<Supplier> updateSupplier(Supplier supplier);
   Future<Result> deactivateSupplier(int id);
   Future<Result> reactivateSupplier(int id);
+  Future<List<Supplier>> searchSuppliers(String query);
 }

@@ -79,4 +79,22 @@ class SupplierService {
       throw Exception(e.toString());
     }
   }
+
+  Future<List<SupplierApiModel>> searchSuppliers(String query) async {
+    if (query.isEmpty) {
+      return [];
+    }
+
+    try {
+      final response = await _dio.get('$_supplierEndpoint/search?company_name=$query');
+
+      final filteredSuppliersList = (response.data as List)
+          .map((e) => SupplierApiModel.fromJson(e))
+          .toList();
+
+      return filteredSuppliersList;
+    } on DioException catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

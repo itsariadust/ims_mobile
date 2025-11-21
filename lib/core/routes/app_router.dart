@@ -8,6 +8,7 @@ import 'package:ims_mobile/views/pages/employees/employee_form.dart';
 import 'package:ims_mobile/views/pages/employees/employees_list.dart';
 import 'package:ims_mobile/views/pages/home.dart';
 import 'package:ims_mobile/views/pages/items/item_detail.dart';
+import 'package:ims_mobile/views/pages/items/item_form.dart';
 import 'package:ims_mobile/views/pages/items/items_list.dart';
 import 'package:ims_mobile/views/pages/login.dart';
 import 'package:ims_mobile/views/pages/main_screen.dart';
@@ -163,6 +164,29 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           final Item itemObject = state.extra as Item;
           return ItemDetailScreen(
             item: itemObject, // Full data for editing
+          );
+        },
+      ),
+      // Add/Edit Item
+      GoRoute(
+        name: 'itemAdd',
+        path: '/item/add',
+        builder: (BuildContext context, GoRouterState state) {
+          final String? actionType = state.uri.queryParameters['actionType'];
+          return ItemFormScreen(
+            actionType: actionType,
+          );
+        },
+      ),
+      GoRoute(
+        name: 'itemEdit',
+        path: '/item/:id/edit',
+        builder: (BuildContext context, GoRouterState state) {
+          final String? actionType = state.uri.queryParameters['actionType'];
+          final Item itemObject = state.extra as Item;
+          return ItemFormScreen(
+            actionType: actionType,
+            item: itemObject,
           );
         },
       ),
