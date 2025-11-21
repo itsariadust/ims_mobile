@@ -25,7 +25,11 @@ void main() {
       "location": "Rack A1",
       "supplier": {
         "id": 1,
-        "companyName": "Luzon Leatherworks Trading"
+        "companyName": "Luzon Leatherworks Trading",
+        "contactPerson": "Maria Angelica de la Cruz",
+        "email": "angelica.delacruz@luzonleather.ph",
+        "contactNumber": "+63 917 234 8890",
+        "isActive": true
       },
       "reorderLevel": 20,
       "targetStockLevel": 100,
@@ -39,7 +43,11 @@ void main() {
       "location": "Rack A2",
       "supplier": {
         "id": 1,
-        "companyName": "Luzon Leatherworks Trading"
+        "companyName": "Luzon Leatherworks Trading",
+        "contactPerson": "Maria Angelica de la Cruz",
+        "email": "angelica.delacruz@luzonleather.ph",
+        "contactNumber": "+63 917 234 8890",
+        "isActive": true
       },
       "reorderLevel": 15,
       "targetStockLevel": 80,
@@ -55,7 +63,11 @@ void main() {
     "location": "Rack A1",
     "supplier": {
       "id": 1,
-      "companyName": "Luzon Leatherworks Trading"
+      "companyName": "Luzon Leatherworks Trading",
+      "contactPerson": "Maria Angelica de la Cruz",
+      "email": "angelica.delacruz@luzonleather.ph",
+      "contactNumber": "+63 917 234 8890",
+      "isActive": true
     },
     "reorderLevel": 20,
     "targetStockLevel": 100,
