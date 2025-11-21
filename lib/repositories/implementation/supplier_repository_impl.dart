@@ -22,7 +22,7 @@ class SupplierRepositoryImpl implements SupplierRepository {
     try {
       final supplierList = await _supplierService.fetchAllSuppliers();
 
-      return supplierList.map((supplier) => supplier.toSupplier()).toList();
+      return supplierList.map((supplier) => supplier.toDomain()).toList();
     } catch (e) {
       rethrow;
     }
@@ -32,7 +32,7 @@ class SupplierRepositoryImpl implements SupplierRepository {
   Future<Supplier> getSupplier(int id) async {
     try {
       final supplier = await _supplierService.fetchSupplier(id);
-      return supplier.toSupplier();
+      return supplier.toDomain();
     } catch (e) {
       rethrow;
     }
@@ -42,14 +42,14 @@ class SupplierRepositoryImpl implements SupplierRepository {
   Future<Supplier> addSupplier(NewSupplier supplier) async {
     final newSupplierModel = NewSupplierApiModel.fromDomain(supplier);
     final newSupplier =  await _supplierService.addSupplier(newSupplierModel);
-    return newSupplier.toSupplier();
+    return newSupplier.toDomain();
   }
 
   @override
   Future<Supplier> updateSupplier(Supplier supplier) async {
     final supplierModel = SupplierApiModel.fromDomain(supplier);
     final updatedSupplier = await _supplierService.updateSupplier(supplier.id, supplierModel);
-    return updatedSupplier.toSupplier();
+    return updatedSupplier.toDomain();
   }
 
   @override

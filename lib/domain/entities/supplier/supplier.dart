@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ims_mobile/models/supplier/supplier_api_model.dart';
 
 @immutable
 class Supplier {
@@ -33,6 +34,17 @@ class Supplier {
       email: email ?? this.email,
       contactNumber: contactNumber ?? this.contactNumber,
       isActive: isActive ?? this.isActive,
+    );
+  }
+
+  SupplierApiModel toApiModel() {
+    return SupplierApiModel(
+      id: id,
+      companyName: companyName,
+      contactPerson: contactPerson,
+      email: email,
+      contactNumber: contactNumber,
+      isActive: isActive
     );
   }
 }

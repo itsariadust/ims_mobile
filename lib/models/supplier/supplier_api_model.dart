@@ -35,7 +35,7 @@ class SupplierApiModel {
     );
   }
 
-  Supplier toSupplier() {
+  Supplier toDomain() {
     return Supplier(
         id: id,
         companyName: companyName,

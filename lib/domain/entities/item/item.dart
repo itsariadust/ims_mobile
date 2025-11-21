@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:ims_mobile/domain/entities/supplier/supplier_simple.dart';
+import 'package:ims_mobile/domain/entities/supplier/supplier.dart';
 
 @immutable
 class Item {
@@ -7,7 +7,7 @@ class Item {
   final String itemName;
   final String category;
   final String location;
-  final SupplierSimple supplier;
+  final Supplier supplier;
   final int reorderLevel;
   final int targetStockLevel;
   final int currentStockLevel;

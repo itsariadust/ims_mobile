@@ -1,7 +1,7 @@
 
 
 import 'package:ims_mobile/domain/entities/item/item.dart';
-import 'package:ims_mobile/models/supplier/supplier_simple_api_model.dart';
+import 'package:ims_mobile/models/supplier/supplier_api_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'item_api_model.g.dart';
@@ -11,7 +11,7 @@ class ItemApiModel {
   final String itemName;
   final String category;
   final String location;
-  final SupplierSimpleApiModel supplier;
+  final SupplierApiModel supplier;
   final int reorderLevel;
   final int targetStockLevel;
   final int currentStockLevel;
@@ -53,7 +53,7 @@ class ItemApiModel {
       itemName: item.itemName,
       category: item.category,
       location: item.location,
-      supplier: SupplierSimpleApiModel.fromDomain(item.supplier),
+      supplier: item.supplier.toApiModel(),
       reorderLevel: item.reorderLevel,
       targetStockLevel: item.targetStockLevel,
       currentStockLevel: item.currentStockLevel,
