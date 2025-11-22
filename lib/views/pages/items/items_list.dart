@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ims_mobile/core/routes/app_router.dart';
 import 'package:ims_mobile/viewmodels/item/item_list_viewmodel.dart';
 
 class ItemsScreen extends ConsumerWidget {
@@ -10,7 +9,6 @@ class ItemsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemListAsyncValue = ref.watch(itemListViewModelProvider);
-    final rootContext = ref.read(appRouterProvider).routerDelegate.navigatorKey.currentContext;
     return Scaffold(
       body: itemListAsyncValue.when(
         data: (items) {
