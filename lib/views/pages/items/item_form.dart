@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ims_mobile/domain/entities/item/item.dart';
@@ -16,6 +17,8 @@ class ItemFormScreen extends ConsumerStatefulWidget {
 }
 
 class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final _itemNameController = TextEditingController();
   final _itemCategoryController = TextEditingController();
   final _itemLocationController = TextEditingController();
@@ -60,27 +63,37 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
 
   void _checkForChanges() {
     final item = widget.item;
+
+    bool areValuesValid = true;
+    if (widget.actionType != 'edit') {
+      final current = int.tryParse(_itemCurrentStockLevelController.text) ?? 0;
+      final target = int.tryParse(_itemTargetStockLevelController.text) ?? 0;
+      final reorder = int.tryParse(_itemReorderLevelController.text) ?? 0;
+
+      if (current <= 0 || target < 0 || reorder < 0) {
+        areValuesValid = false;
+      }
+    }
+
+    bool hasChanged = false;
     if (item == null) {
-      setState(() {
-        _isFormModified = _itemNameController.text.isNotEmpty ||
+      hasChanged = _itemNameController.text.isNotEmpty ||
             _itemCategoryController.text.isNotEmpty ||
             _itemLocationController.text.isNotEmpty ||
             _itemReorderLevelController.text.isNotEmpty ||
             _itemTargetStockLevelController.text.isNotEmpty ||
             _itemCurrentStockLevelController.text.isNotEmpty;
-      });
-      return;
+    } else {
+      hasChanged = _itemNameController.text != item.itemName ||
+          _itemCategoryController.text != item.category ||
+          _itemLocationController.text != item.location ||
+          _itemReorderLevelController.text != item.reorderLevel.toString() ||
+          _itemTargetStockLevelController.text != item.targetStockLevel.toString() ||
+          _itemCurrentStockLevelController.text != item.currentStockLevel.toString();
     }
 
-    final hasChanged = _itemNameController.text != item.itemName ||
-        _itemCategoryController.text != item.category ||
-        _itemLocationController.text != item.location ||
-        _itemReorderLevelController.text != item.reorderLevel.toString() ||
-        _itemTargetStockLevelController.text != item.targetStockLevel.toString() ||
-        _itemCurrentStockLevelController.text != item.currentStockLevel.toString();
-
     setState(() {
-      _isFormModified = hasChanged;
+      _isFormModified = hasChanged && areValuesValid;
     });
   }
 
@@ -131,6 +144,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
         margin: const EdgeInsets.only(left: 16, right: 16, top: 8),
         child: SingleChildScrollView(
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -169,10 +183,19 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                         child: TextFormField(
                           controller: _itemCurrentStockLevelController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(
                             labelText: 'Current Stock',
                             border: OutlineInputBorder(),
                           ),
+                          validator: (value) {
+                            final val = int.tryParse(value!) ?? 0;
+                            if (val < 0) {
+                              return 'Must be a positive integer';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -180,10 +203,19 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                         child: TextFormField(
                           controller: _itemTargetStockLevelController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(
                             labelText: 'Target Stock',
                             border: OutlineInputBorder(),
                           ),
+                          validator: (value) {
+                            final val = int.tryParse(value!) ?? 0;
+                            if (val < 0) {
+                              return 'Must be a positive integer';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ],
@@ -192,10 +224,19 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                   TextFormField(
                     controller: _itemReorderLevelController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: const InputDecoration(
                       labelText: 'Reorder Level',
                       border: OutlineInputBorder(),
                     ),
+                    validator: (value) {
+                      final val = int.tryParse(value!) ?? 0;
+                      if (val < 0) {
+                        return 'Must be a positive integer';
+                      }
+                      return null;
+                    },
                   ),
                 ],
                 const SizedBox(height: 32),
