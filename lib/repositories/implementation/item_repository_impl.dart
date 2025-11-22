@@ -1,5 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ims_mobile/domain/entities/item/edit_item.dart';
 import 'package:ims_mobile/domain/entities/item/item.dart';
+import 'package:ims_mobile/domain/entities/item/new_item.dart';
+import 'package:ims_mobile/models/item/new_item_api_model.dart';
+import 'package:ims_mobile/models/item/edit_item_api_model.dart';
 import 'package:ims_mobile/repositories/item_repository.dart';
 import 'package:ims_mobile/services/item_service.dart';
 
@@ -16,8 +20,8 @@ class ItemRepositoryImpl implements ItemRepository {
   @override
   Future<List<Item>> getItemList() {
     try {
-      final itemService = _itemService.fetchAllItems();
-      return itemService.then((items) => items.map((item) => item.toDomain()).toList());
+      final itemList = _itemService.fetchAllItems();
+      return itemList.then((items) => items.map((item) => item.toDomain()).toList());
     } catch (e) {
       rethrow;
     }
@@ -26,8 +30,30 @@ class ItemRepositoryImpl implements ItemRepository {
   @override
   Future<Item> getItem(int id) {
     try {
-      final itemService = _itemService.fetchItem(id);
-      return itemService.then((item) => item.toDomain());
+      final item = _itemService.fetchItem(id);
+      return item.then((item) => item.toDomain());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Item> addItem(NewItem item) async {
+    try {
+      final newItemModel = NewItemApiModel.fromDomain(item);
+      final newItem = await _itemService.addItem(newItemModel);
+      return newItem.toDomain();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Item> editItem(EditItem updatedItemData, int id) async {
+    try {
+      final editedItemModel = EditItemApiModel.fromDomain(updatedItemData);
+      final editedItem = await _itemService.editItem(editedItemModel, id);
+      return editedItem.toDomain();
     } catch (e) {
       rethrow;
     }
